@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"name": "spring-petclinic",
+			"path": "../../Backend-Workspace/spring-petclinic"
+		}
+	],
+	"settings": {
+		"git.ignoreLimitWarning": true
+	}
+}
