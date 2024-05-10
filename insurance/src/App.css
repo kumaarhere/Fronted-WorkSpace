@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 .property{
 background-image: radial-gradient(circle at center center, rgba(217, 217, 217,0.05) 0%, rgba(217, 217, 217,0.05) 15%,rgba(197, 197, 197,0.05) 15%, rgba(197, 197, 197,0.05) 34%,rgba(178, 178, 178,0.05) 34%, rgba(178, 178, 178,0.05) 51%,rgba(237, 237, 237,0.05) 51%, rgba(237, 237, 237,0.05) 75%,rgba(138, 138, 138,0.05) 75%, rgba(138, 138, 138,0.05) 89%,rgba(158, 158, 158,0.05) 89%, rgba(158, 158, 158,0.05) 100%),radial-gradient(circle at center center, rgb(255,255,255) 0%, rgb(255,255,255) 6%,rgb(255,255,255) 6%, rgb(255,255,255) 12%,rgb(255,255,255) 12%, rgb(255,255,255) 31%,rgb(255,255,255) 31%, rgb(255,255,255) 92%,rgb(255,255,255) 92%, rgb(255,255,255) 97%,rgb(255,255,255) 97%, rgb(255,255,255) 100%); background-size: 42px 42px;
 background-attachment:fixed;
@@ -5,6 +6,14 @@ background-attachment:fixed;
 .fillOutPage{
 background-image: radial-gradient(circle at center center, rgba(217, 217, 217,0.05) 0%, rgba(217, 217, 217,0.05) 15%,rgba(197, 197, 197,0.05) 15%, rgba(197, 197, 197,0.05) 34%,rgba(178, 178, 178,0.05) 34%, rgba(178, 178, 178,0.05) 51%,rgba(237, 237, 237,0.05) 51%, rgba(237, 237, 237,0.05) 75%,rgba(138, 138, 138,0.05) 75%, rgba(138, 138, 138,0.05) 89%,rgba(158, 158, 158,0.05) 89%, rgba(158, 158, 158,0.05) 100%),radial-gradient(circle at center center, rgb(255,255,255) 0%, rgb(255,255,255) 6%,rgb(255,255,255) 6%, rgb(255,255,255) 12%,rgb(255,255,255) 12%, rgb(255,255,255) 31%,rgb(255,255,255) 31%, rgb(255,255,255) 92%,rgb(255,255,255) 92%, rgb(255,255,255) 97%,rgb(255,255,255) 97%, rgb(255,255,255) 100%); background-size: 42px 42px;
 height: 100vh;
+}
+.branddesc{
+  font-family: 'Bebas Neue'
+  ;
+}
+.aspect-ratio-4-3 {
+  height: 0;
+  aspect-ratio:4/3;
 }
 
 .tra
@@ -111,7 +120,6 @@ height: 100vh;
   content: '\25BA';
   color: orange; /* Green color */
   font-size: 1.2em; /* Adjust size if needed */
-  margin-right: 0.5em; /* Adjust spacing */
 }
 
 .fixed{
@@ -124,7 +132,15 @@ height: 100vh;
   }
 
 .ramana{
-  width:220px;
+  width:200px;
+}
+.LHomeImg{
+  position: absolute;
+  top: 14rem;
+  left:4rem;
+}
+.gqcards{
+  overflow: scroll;
 }
 @keyframes shine {
   0% {
@@ -155,7 +171,7 @@ height: 100vh;
     border-right:none !important;
   }
 }
-@media (min-width:250px) and (max-width:400px){
+@media (min-width:250px) and (max-width:415px){
   .DetailPic{
     display: none !important;
   }
@@ -178,10 +194,17 @@ height: 100vh;
     width:150px;
   }
   .care{
-     width:100px;
+     width:5rem !important;
   }
   .quotes{
     margin-left: -10%;
+  }
+  .sdErrmsg{
+    margin: 0 !important;
+    overflow: scroll;
+  }
+  .line{
+    border-right:none !important;
   }
 }
 @media (min-width:400px) and (max-width:800px){
@@ -191,9 +214,35 @@ height: 100vh;
   .FillPropertyLeft{
     border: none !important;
   }
+  .sdErrmsg{
+    margin: 0 !important;
+    overflow: scroll;
+  }
+  .care{
+    height: 8rem !important
+  }
+  .gqfcol{
+    display: flex;
+    flex-direction: column;
+    margin-left: 4rem;
+  }
+  .line{
+    border-right:none !important;
+  }
 }
 @media (min-width:800px) and (max-width:1000px){
   .DetailPic{
     display: none !important;
+  }
+  .gqfcol{
+    display: flex;
+    flex-direction: column;
+    margin-left: 5rem;
+  }
+  .care{
+    height: 10rem !important
+  }
+  .line{
+    border-right:none !important;
   }
 }

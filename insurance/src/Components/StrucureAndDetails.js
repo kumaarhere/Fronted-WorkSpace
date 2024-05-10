@@ -162,16 +162,16 @@ export default function StrucureAndDetails() {
   return (
     <>
       <Header/>
-    <div className='mt-lg-5 pt-lg-3 mt-5 pt-2 property container-fluid px-1 px-lg-5'>
+    <div className='mt-lg-5 pt-lg-3 mt-5 pt-2 property px-1 px-lg-2'>
           <div> <h2 className='text-center fw-bold text-success pt-lg-2 pt-4 'style={{fontFamily:'verdana'}}> PROPERTY DETAILS <RoofingIcon className='fs-1'/></h2></div>
 
           <form  onSubmit={handleClick} class='form-horizatol'  >
+            <div className='row container-fluid'>
 
             
-            <div className='row ms-lg-5 '>
-  <div className='col-12 col-lg-6 p-3 mx-lg-5 mx-2 mt-3 line'style={{borderRight:'6px solid #ccc',borderRadius:'4px'}}>
-    <h3 className='text-center mb-5 fw-bold bg-primary rounded text-white p-1 px-2 mx-lg-3 me-lg-5' >Structure And Details </h3>
-    <div className="form-group ms-lg-4">
+  <div className='col-12 col-lg-6 px-2 mt-3 sdborder line'style={{borderRight:'6px solid #ccc',borderRadius:'4px'}}>
+    <h3 className='text-center mb-5 fw-bold bg-primary rounded text-white p-1 px-2 mx-lg-3 me-lg-4' >Structure And Details </h3>
+    <div className="form-group ms-lg-5">
       <div className="">
         <TextField
           id="outlined-textarea"
@@ -204,12 +204,13 @@ export default function StrucureAndDetails() {
           }}
         />
       </div>
-      {values.marketValue && <small className='fw-semibold text-secondary text-start'>Rs.{convertToText(parseFloat(values.marketValue))} only</small>}
-      {validationErrors.marketValue && <p className="text-danger mx-5 fs-6 fw-bold">{validationErrors.marketValue}</p>}
+      {values.marketValue && <span className='fw-semibold text-secondary text-start'><small>Rs.{convertToText(parseFloat(values.marketValue))} only</small></span>}
+      <small className='text-nowrap'>
+      {validationErrors.marketValue && <p className="text-danger mx-5 fs-6 fw-bold">{validationErrors.marketValue}</p>}</small>
     </div>
 
-    <div className="form-group ms-lg-4 mt-3">
-      <div className="mb-1">
+    <div className="form-group ms-lg-5 mt-3">
+      <div className="">
         <TextField
           id="outlined-textarea"
           label="Carpet Area(sqft):"
@@ -243,7 +244,7 @@ export default function StrucureAndDetails() {
       {validationErrors.squareFeet && <p className="text-danger mx-5 fw-bold">{validationErrors.squareFeet}</p>} <br></br>
     </div>
 
-    <div className="form-group ms-lg-4">
+    <div className="form-group ms-lg-5">
       <div className="">
         <TextField
           id="outlined-textarea"
@@ -278,7 +279,7 @@ export default function StrucureAndDetails() {
       {validationErrors.pincode && <span className="text-danger mx-5 fw-bold">{validationErrors.pincode}</span>}
     </div>
 
-    <div className="form-group ms-lg-4 mt-3 fw-bold">
+    <div className="form-group ms-lg-5 mt-3 fw-bold">
       <label htmlFor="age" className="control-label text-secondary">&#9900; Age Of The Building</label>
       <span>
         <select id='age' required name='buildingAge' style={{ borderRadius: '10px' }} value={values.buildingAge} onChange={onSubmit} className='ms-lg-2 ms-3 py-2 px- fw-bold bg-light'>
@@ -294,8 +295,8 @@ export default function StrucureAndDetails() {
       <br></br>
     </div>
 
-    <div className="form-group ms-lg-4 mt-3">
-      <label htmlFor="effect" className="control-label mt-2 fw-bold text-secondary">&#9900; Has Your Property Effected With Floods In Last 5 Years &nbsp;
+    <div className="form-group ms-lg-5 mt-2">
+      <label htmlFor="effect" className="control-label mt-2 fw-bold text-secondary">&#9900; Has Your Property Effected With Floods in Last 5years &nbsp;
       <span>
         <select id='effect' name='effected' className='ms-lg-2 px-3 py-2 fw-bold bg-light' style={{ borderRadius: '10px' }} required value={values.effected} onChange={onSubmit}>
           <option value="">Select</option>
@@ -308,9 +309,9 @@ export default function StrucureAndDetails() {
     </div>
   </div>
 
-  <div className='col-12 col-lg-5 p-3 mt-3'>
+  <div className='col-12 col-lg-6 mt-3'>
     <div className=''>
-      <h3 className='fw-bold text-center bg-primary rounded text-white p-1 me-lg-5'>&nbsp; Security Measurement Details</h3>
+      <h3 className='fw-bold text-center bg-primary rounded text-white p-1 ms-2 me-lg-4'>&nbsp; Security Measurement Details</h3>
     </div>
 
   <div className="form-group ms-5 mt-lg-3">
@@ -343,11 +344,13 @@ export default function StrucureAndDetails() {
 </div>
   </div>
 {/* {i} */}
-<div className='text-center ms-lg-5 ps-lg-5 ms-5'>
-<button className='btn btn-primary mt-5 fs-5 px-5 fw-bold quotes shadow ms-lg-5'> View Quotes </button>
+<div className='text-center ms-3'>
+<button className='btn btn-primary mt-5 fs-5 px-5 fw-bold' > View Quotes </button>
+{/* <hr></hr>
+<p className='text-center pb-3'>RamanaSoft Insurance Company offers comprehensive insurance solutions focused on integrity, innovation, and customer satisfaction. With a commitment to excellence and social responsibility, we strive to be a leading provider in the industry, meeting the evolving needs of our customers while maintaining financial stability and regulatory compliance.</p> */}
 </div>
           </form>
-<div className='rounded pb-0 mt-3 ms-lg-5 ps-3  ps-lg-5 '>
+<div className='rounded pb-0 mt-3'>
   <p className='text-center fw-bold'><span className='text-danger'>RamanaSoft</span> @ 2024</p>
 </div>
 

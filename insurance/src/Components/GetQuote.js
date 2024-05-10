@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Modal } from 'react-bootstrap';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { regexEmail, regexMobileNo, regexPassword, regexUsername } from './RegularExpressions';
@@ -14,6 +14,12 @@ import care from './images/care.png'
 import '../App.css'
 import Header from './Header';
 import { useSpring, animated } from 'react-spring';
+import Offcanvas from 'bootstrap/js/dist/offcanvas';
+import Button from 'bootstrap/js/dist/button';
+import Dropdown from 'bootstrap/js/dist/dropdown';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+
+
 
 
 
@@ -22,8 +28,32 @@ function GetQuote()
   const location = useLocation();
   const { state } = location;
 
+  const [otpValues, setOtpValues] = useState(['', '', '', '']);
+  const [enterotp,SetEnterOtp]=useState("");
+  const [otp, setOtp] = useState(['', '', '', '']); 
+  const otpInputs = useRef([]);
 
-
+  const handleOtpInputChange = (index, value) => {
+    if (value.match(/[0-9]/)) {
+        const newOtpValues = [...otpValues];
+        newOtpValues[index] = value;
+        setOtpValues(newOtpValues);
+    }
+};
+const handleOtpChange = (index, value) => {
+  if (value.length > 1) return;
+  const updatedOtp = [...otp];
+  updatedOtp[index] = value;
+  setOtp(updatedOtp);
+  if (value && index < 4) {
+    if (index < 3) {
+      otpInputs.current[index + 1].focus();
+    }
+    }
+    else if (index > 0) {
+      otpInputs.current[index - 1].focus();
+    }
+};
 
   const marketValue = state?.formValues?.marketValue ;
   console.log( marketValue);
@@ -386,6 +416,31 @@ function GetQuote()
   const [showModal, setShowModal] = useState(false);
   const [showstate , setState] = useState(false);
 
+  const handleYearChange = (event) => {
+    const selectedYear = event.target.value;
+    setYear(selectedYear);
+
+    // Call your calculate function based on selected year
+    switch (selectedYear) {
+        case 1:
+            caliculate1();
+            break;
+        case 2:
+            caliculate2();
+            break;
+        case 3:
+            caliculate3();
+            break;
+        case 4:
+            caliculate4();
+            break;
+        case 5:
+            caliculate5();
+            break;
+    }
+};
+
+
 
   // useEffect(() => {
   //   const storedYear = sessionStorage.getItem('year');
@@ -680,14 +735,31 @@ var i=0;
           onRest: () => setIsBuyNow(!isBuyNow)
         }); 
 
+        // const [showOTPInput,setshowOTPInput]=useState(false);
+  const [EmailOTPInput,setEmailshowOTPInput]=useState(false);
+
+ 
+  
+  function sendOTP(e){
+  e.preventDefault();
+    setshowOTPInput(true);
+    console.log(showOTPInput);
+  }
+  function sendemailOTP(e){
+  e.preventDefault();
+    setEmailshowOTPInput(true);
+    console.log(EmailOTPInput);
+  }
+
+
   return (
     <div className='property'>
       <Header/>
-    <div className=' pt-4'>
+    <div className='container-fluid pt-lg-3'>
       <div className='row mt-lg-5'>
-       <div className='col-12 col-lg-3 ms-lg-3 ms-2 order-2 order-lg-1'>
+       <div className='col-12 col-lg-3 col-md-10 ms-lg-3 order-2 order-lg-1 gqfcol'>
        <div class="card mt-2 mb-3" >
-        <div class="card-body bg-light border border-warning rounded shadow ">
+        <div class="card-body bg-light border border-warning rounded shadow gqcards">
            <h5 class="card-title bg-warning-subtle text-center rounded p-1 fw-bold">Secure your home rightfully!</h5>
            <p class="card-title bg-secondary-subtle text-center rounded p-1 fw-bold">You have the right to buy home insurance from RamanaSoft</p>
             <ui className="custom-bullet">
@@ -696,15 +768,46 @@ var i=0;
               {/* <li style={{whiteSpace:'nowrap'}}>save <span className='fw-bold'>up to 25%</span> by comparing plans</li> */}
               <li style={{whiteSpace:'nowrap'}}>Buy <span className='fw-bold'>without unwanted </span> addons!</li>
             </ui>
-            <small className='text-secondary ms-4'>Strandard <span><a href='#' className='text-decoration-none'>terms & conditions</a></span> apply.</small>
+            <small className='text-secondary ms-4'>Standard <span><a href='#offcanvasExample' data-bs-toggle="offcanvas" role="button" aria-controls="offcanvasExample" className='text-decoration-none'>terms & conditions</a></span> apply.</small>
+
+            <div className="offcanvas offcanvas-start" tabIndex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+        <div className="offcanvas-header">
+          <h5 className="offcanvas-title text-secondary fw-bold" id="offcanvasExampleLabel">Terms & Conditions</h5>
+          <button type="button" className="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div className="offcanvas-body">
+          <div>
+            <ul>
+              <li className='px-2'>
+                <b>Coverage Scope: </b>Property insurance covers damage or loss to your property due to specified perils, such as fire, theft, vandalism, and natural disasters. The coverage may extend to the building structure, contents, and personal belongings within the premises.
+              </li>
+              <li className='px-2'>
+                <b>Policy Limits: </b>The policy will specify the maximum amount the insurance company will pay out for covered losses. It's essential to review these limits and ensure they adequately protect your property.
+              </li>
+              <li className='px-2'>
+                <b>Deductibles: </b> You may be required to pay a deductible before the insurance coverage kicks in. The deductible amount is typically chosen by the policyholder and can affect the cost of premiums.
+              </li>
+              <li className='px-2'>
+                <b>Premiums: </b>  Premiums are the regular payments you make to maintain coverage. The amount of the premium is determined by factors such as the value of the insured property, location, and risk factors.
+              </li>
+              <li className='px-2'>
+                <b>Claims Process: </b>  In the event of a covered loss, you must promptly notify the insurance company and file a claim. The insurer will investigate the claim and assess the damage before determining the payout.
+              </li>
+              <li className='px-2'>
+                <b>olicy Renewal: </b> Property insurance policies are typically renewable annually. The insurer may review and adjust premiums, coverage limits, and terms at the time of renewal.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
         </div>
      </div>
 
 <div class="card text-center mb-3">
   <div class="card-body bg-light border border-danger rounded shadow">
     <h5 class="card-title text-start bg-danger-subtle rounded fw-bold p-1 text-center">Entire Housing Society</h5>
-    <p class="card-text">Secure your entire housing society against <br/><ul className='d-flex justify-content-evenly fw-semibold mt-1'><li>Fire</li><li>Theft</li><li>Natural disasters</li></ul> </p>
-    <button  class="btn text-success border fw-bold">Buy Now <HomeIcon /></button>
+    <p class="card-text">Secure your entire housing society against <br/><ul className='d-flex justify-content-evenly fw-semibold mt-1'><li className='me-2'>Fire</li><li className='me-2'>Theft</li><li className='me-2'>Natural disasters</li></ul> </p>
+    {/* <button  class="btn text-success border fw-bold"><HomeIcon /></button> */}
   </div>
 </div>
 
@@ -712,11 +815,12 @@ var i=0;
   <div class="card-body bg-light border border-primary rounded row">
     <h5 class="card-title fw-bold bg-secondary-subtle rounded text-dark">Talk to Expert</h5>
     <div className='col mt-lg-2 rounded'>
-      <img src={care} className='img-fluid  care' alt='customer care'></img>
+      <img src={care} className='img-fluid care' alt='customer care'></img>
     </div>
     <div className='col-lg-8'>
     <p class="card-text ">Our agent can help you to buy the best home insurance!</p>
-    <button  class="btn fw-bold text-primary border"><PhoneIcon />Talk to Expert</button>
+    <button  className="btn fw-bold text-primary border mb-1"><PhoneIcon />Talk to Expert</button><br/>
+    <span className=''>(1800-143-143)</span>
     </div>
   </div>
 </div>
@@ -737,6 +841,7 @@ var i=0;
         value={year}
         label="Age of the Building"
         className='fw-bold'
+        onChange={handleYearChange}
         required
       >
         <MenuItem value={1} onClick={caliculate1}>1 Year</MenuItem>
@@ -771,9 +876,9 @@ var i=0;
         <span className="default-text mt-1">&#x20B9; {Premium?Premium:0}/-</span>
         <span className="hover-text mt-1">Buy Now</span>
       </button> */}
-      <button style={{ position: 'relative', width: '150px', height: '50px', overflow: 'hidden' }} className='btn btn-primary rounded buy shadow fw-bold' onClick={handleSignUp}>
+      <button style={{ position: 'relative', width: '150px', height: '50px', overflow: 'hidden' }} className='btn btn-primary rounded buy shadow fw-bold' onClick={handleSignUp} disabled={!year}>
       <animated.div style={{ ...slideAnimation, position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}>
-        {isBuyNow ? 'Buy Now' : `₹${Premium?Premium:0}/-`}
+        {isBuyNow ? 'Buy Now' : ` ${Premium?Premium:0}/-`}
       </animated.div>
     </button>
     </div>
@@ -782,11 +887,11 @@ var i=0;
 
     </div>
   </div>
-  <div class="card-footer text-body-secondary text-end fw-bold">
-    <div className='d-flex flex-column flex-md-row   justify-content-evenly mt-2'>
-    <div><p className='text-secondary px-3'style={{borderRight:'6px solid #ccc'}}>Property Value -<span className='fw-bold text-dark'>&nbsp;{marketValue}</span></p></div>
-    <div><p className='text-secondary' >Age Of The Building -<span className='fw-bold text-dark'>&nbsp;{buildingAge}</span></p></div>
-    <div><p className='text-secondary px-3'style={{borderLeft:'6px solid #ccc'}}>SquareFeet -<span className='fw-bold text-dark'>&nbsp;{squareFeet}</span></p></div>
+  <div class="card-footer text-body-secondary text-center fw-bold">
+    <div className='d-flex flex-column flex-md-row  justify-content-evenly mt-2'>
+    <p className='text-secondary pe-4'style={{borderRight:'6px solid #ccc'}}>Property Value -<span className='fw-bold text-dark'>&nbsp;{marketValue}</span></p>
+    <p className='text-secondary' >Age Of The Building -<span className='fw-bold text-dark'>&nbsp;{buildingAge}</span></p>
+    <p className='text-secondary px-3'style={{borderLeft:'6px solid #ccc'}}>SquareFeet -<span className='fw-bold text-dark'>&nbsp;{squareFeet}</span></p>
     </div>
   </div>
 </div>
@@ -808,29 +913,62 @@ var i=0;
                     required
                     value={feilds.name}
                     onChange={change}
-                    inputProps={{ maxLength: 20 }}
+                    inputProps={{ maxLength: 30 }}
                   /><br/>{validationErrors.name && <span className="text-danger">{validationErrors.name}</span>}<br/>
                   <div className='row'>
                     <div className='col-12 col-lg-8'>
                   
                   <TextField
-                    className='mt-1 w-100'
+                    className='w-100'
                     id="outlined-basic"
                     // variant="outlined"
                     label="Email-Id"
                     placeholder="Enter Your Mail-Id"
                     name='email'
-                    maxLength={20}
                     required
                     value={feilds.email}
                     onChange={change}
-                    /><br/>{validationErrors.email && <span className="text-danger">{validationErrors.email}</span>}<br/>
+                    inputProps={{ maxLength: 30 }}
+                    /><br/>
+                    <small>
+                    {validationErrors.email && <span className="text-danger sdErrmsg">{validationErrors.email}</span>}</small>
                     </div>
                     <div style={{float:'right'}} className='col-12 col-lg-4'>
-                    <button className='btn btn-success px-3 py-2 rounded mt-2 fw-bold shadow' onClick={sendOTP}>Send OTP</button>
+                    <button className='btn btn-success px-3 py-2 rounded mt-2 fw-bold shadow' onClick={sendemailOTP}>Send OTP</button>
                     </div>
+                    {data1 === "email exists" && <h5 className='text-danger'>{data1}</h5>}
+                    {EmailOTPInput && (
+                  <div>
+                     <div className='ms-5'>
+                      <small className='text-success'>OTP sent to your email address</small>
+                      <form className='w-75 d-flex flex-nowrap pt-3'>
+                      {[...Array(4)].map((_, index) => (
+                      <input 
+                        key={index} 
+                        type="text"
+                        autoFocus={index === 0}
+                        ref={(input) => otpInputs.current[index] = input}
+                        onChange={(e) => 
+                          {handleOtpInputChange(index, e.target.value);
+                          handleOtpChange(index, e.target.value);}}
+                        className='w-25 border ps-2 fw-bold' 
+                        maxLength={1} 
+                        style={{ marginRight: '8px' }}
+                        onKeyPress={(e) => {
+                          const isValidInput = /[0-9]/;
+                          if (!isValidInput.test(e.key)) {
+                          e.preventDefault();
+                          }
+                        }}
+                      />
+                       ))}
+                       <button className='btn btn-info text-nowrap fw-bold shadow ms-3'>Verify OTP</button>
+                      </form>
+                     </div>
                   </div>
-                    <div className='row'>
+                    )}
+                  </div>
+                    <div className='row mt-2'>
                       <div className='col-12 col-lg-8'>
                  <TextField
                     className=' mt-1 w-100'
@@ -850,12 +988,15 @@ var i=0;
                       }
                     }}
                     autoComplete='off'
-                    /><br/>{validationErrors.mobileno && <span className="text-danger">{validationErrors.mobileno}</span>}<br/>
+                    /><br/>
+                    <small>
+                    {validationErrors.mobileno && <span className="text-danger sdErrmsg">{validationErrors.mobileno}</span>}<br/></small>
                     </div>
 
                   <div style={{float:'right'}} className='col-12 col-lg-4'>
                     <button className='btn btn-success px-3 py-2 rounded mt-2 fw-bold shadow' onClick={sendOTP}>Send OTP</button>
                   </div>
+                  {data === "Mobile number exists" && <h5 className='text-danger'>{data}</h5>}
                   {showOTPInput && (
                   <div>
                      <div className='ms-5'>
@@ -867,6 +1008,10 @@ var i=0;
                        maxLength={1} 
                        style={{ marginRight: '8px' }}
                        autoFocus={index === 0}
+                       ref={(input) => otpInputs.current[index] = input}
+                          onChange={(e) => 
+                            {handleOtpInputChange(index, e.target.value);
+                            handleOtpChange(index, e.target.value);}}
                        onKeyPress={(e) => {
                         const isValidInput = /[0-9]/;
                         if (!isValidInput.test(e.key)) {
@@ -881,22 +1026,6 @@ var i=0;
                   </div>
                     )}
                   </div>
-                  {/* <TextField
-                    type='password'
-                    className='mt-2 border w-100'
-                    id="outlined-basic"
-                    // variant="outlined"
-                    label="Password"
-                    placeholder="Enter Your Password"
-                    name='password'
-                    maxLength={20}
-                    required
-                    value={feilds.password}
-                    onChange={change}
-                    /><br/>{validationErrors.password && <span className="text-danger">{validationErrors.password}</span>}<br/> */}
-                
-                  {data === "Mobile number exists" && <h5 className='text-danger'>{data}</h5>}
-                  {data1 === "email exists" && <h5 className='text-danger'>{data1}</h5>}
                   <hr></hr>
                   <div className='d-flex justify-content-center me-4'>
                   <div className=''>
@@ -912,43 +1041,6 @@ var i=0;
           </Modal>
     </div>
 
-    <div>
-            <Modal show={login} onHide={clickClosebutton} className='text-center' >
-           <Modal.Header closeButton  >
-                    <Modal.Title ><h3 className='text-center'>Enter Your Details:</h3></Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                <form onSubmit={handleClicksignup}>
-                <div class="form-group mt-4">
-      <label class="control-label col-lg-4 col-md-6 col-sm-6 col-12">Mobile No :</label>
-      <input className='text-center my-3' type='text' name='mobileno' maxLength={10} style={{ borderRadius: '10px', borderColor: 'cyan' }}  placeholder='Mobile No.... Ex: 7698888123.'  required value={values.mobileno} onChange={change} /> <br></br>
-    </div>
-
-    <div class="form-group mt-2">
-      <label class="control-label col-lg-4 col-md-6 col-sm-6 col-12">Password :</label>
-      <input className='text-center my-3' type='password' name='password' style={{ borderRadius: '10px', borderColor: 'cyan' }} placeholder='Password.... Ex: abc@123.' required onChange={change} /> <br></br>
-    </div>
-    <div class="d-flex justify-content-center w-100">
-
-    {customer !== "Login successful!" && <h4 style={{ color: 'red' }}>{customer}</h4>}
-
-    </div>
-
-    <div>
-      <button className='btn btn-primary text-center my-3 me-2'>Login</button>
-      </div>
-      <div>
-           <span className="login-link text-primary my-3" style={{cursor:'pointer'}} onClick={() =>{
-             setLogin(false);
-             setShowModal(true) ;
-             }}>Switch to Signup....</span> 
-      </div>
-  
-    </form>
-                </Modal.Body>
-               
-            </Modal>
-    </div>
     <div>
            <Modal show={showstate} onHide={clickClose} className='text-center' >
 

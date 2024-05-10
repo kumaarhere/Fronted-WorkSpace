@@ -47,6 +47,8 @@ function FilldetailsPage()
       propertypincode:"",
       propertyhouseNo:"",
       propertystreetNo:"",
+      propertycity:"",
+      propertystate:"",
       currentaddress:"",
       houseno:"",
       streetno:"",
@@ -387,7 +389,6 @@ useEffect(() => {
                     label="Full Name(As per Pan Card)"
                     placeholder="Enter Your Name"
                     name='fullname'
-                    
                     required
                     value={data.fullname.toUpperCase()}
                     onChange={handleChange}
@@ -415,7 +416,7 @@ useEffect(() => {
                     </div>
                     <div className=' col-12 col-lg-6 mb-2'>
                     <label className="control-label w-50 mt-2" ><span className='fw-semibold text-secondary FillDOB'>Date of Birth</span>
-                    <input type='date' name='dob'  min="1924-01-01" max={minDateFormatted}  value={data.dob} required className='ms-2 FillDOBInput p-1 rounded' onChange={handleChange} />  </label><br/>
+                    <input type='date' name='dob'  min="1924-01-01" max={minDateFormatted}  value={data.dob} required className=' FillDOBInput p-1 rounded' onChange={handleChange} />  </label><br/>
                     {validationErrors.dob && <span className="text-danger">{validationErrors.dob}</span>}
                     </div>
 
@@ -483,9 +484,9 @@ useEffect(() => {
                           id="outlined-textarea"
                           label="City"
                           placeholder="Enter Your City"
-                          name='city'
+                          name='propertycity'
                           required
-                          value={data.city}
+                          value={data.propertycity}
                           onChange={handleChange}
                         /><br/>
                         {/* {validationErrors.propertystreetNo && <span className="text-danger">{validationErrors.propertystreetNo}</span>} */}
@@ -496,9 +497,9 @@ useEffect(() => {
                           id="outlined-textarea"
                           label="State"
                           placeholder="Enter Your State"
-                          name='state'
+                          name='propertystate'
                           required
-                          value={data.state}
+                          value={data.propertystate}
                           onChange={handleChange}
                         /><br/>
                         {/* {validationErrors.propertystreetNo && <span className="text-danger">{validationErrors.propertystreetNo}</span>} */}

@@ -210,9 +210,9 @@ const signUpRows = signUpDetails.map((details) => (
       </div>
 
       <div className='col-12 col-md-10 mx-md-5 col-lg-7 mx-2'>
-        <div class="card border-success px-2 shadow mb-3 mx-lg-5 property" style={{ maxWidth: '55rem' }}>
-          <div class="card-header bg-transparent border-success">Reference Number : <span className='fw-bold'>56445462321</span></div>
-          <div class="card-body py-1">
+        <div className="card border-success px-2 shadow mb-3 mx-lg-5 property" style={{ maxWidth: '55rem' }}>
+          <div className="card-header bg-transparent border-success">Reference Number : <span className='fw-bold'>56445462321</span></div>
+          <div className="card-body py-1">
             <div className='d-flex flex-lg-row flex-column justify-content-around'>
               <div>
                 <div className='mt-1 mt-lg-5 mx-5'>
@@ -252,7 +252,7 @@ const signUpRows = signUpDetails.map((details) => (
               </div>
             </div>
           </div>
-          <div class="card-footer bg-transparent ">
+          <div className="card-footer bg-transparent ">
             <div className='p-2 text-center text-lg-start text-secondary'>
               <h6>Declaration : By clicking on proceed to payment I hereby declare that my house is a pucca (brick and cement) construction and I do not have any claim history.</h6>
             </div>
