@@ -1,5 +1,5 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import p3 from '../Components/images/p3.jpeg';
 import '../App.css';
 import PhoneIcon from '@mui/icons-material/Phone';
@@ -34,7 +34,9 @@ function Header() {
       <div class="d-flex justify-content-between align-items-center  py-2 rounded fixed" style={{background:'#f0f8ff'}} >
 
 				<div className="" >
+          <Link to='/'>
         <img class="mx-3 ramana" src={p3} alt="my pic" title='RamanaSoft Insurance' style={{borderRadius:'10px',cursor:'pointer'}}></img>
+         </Link>
         {/* <span className='col-3 fw-bold company' style={{color:'teal',fontSize:'25px'}}>RamanaSoft Insurance Company</span> */}
 				</div> 
 

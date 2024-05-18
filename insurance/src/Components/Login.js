@@ -1,5 +1,5 @@
 import Header from './Header'
-import React, {useRef, useState } from 'react'
+import React, {useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import p5 from '../Components/images/p5.png'
 import PropertyInsuranceService from './Service/PropertyInsuranceService'
@@ -30,6 +30,9 @@ const clientId = "246541673533-e90kj0pumgndrmt51j27v853d3pkon00.apps.googleuserc
 
 function Login() {
   // var i = 0 ;
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const [otpValues, setOtpValues] = useState(['', '', '', '']);
   const [enterotp,SetEnterOtp]=useState("");
@@ -269,8 +272,8 @@ function Login() {
                   </div>
                     )}
                  {verifyotp ===  "Verified Successfully" && <h4 className='text-success mt-2 ms-2'>{verifyotp}<CheckCircleOutlineIcon/></h4>}
-                <div className='mt-4'>
-                    <button className='btn btn-link me-5 text-decoration-none fw-bold' onClick={handleClick} >Create Account ? </button>                
+                <div className='mt-4 ms-5'>
+                    {/* <button className='btn btn-link me-5 text-decoration-none fw-bold' onClick={handleClick} >Create Account ? </button>                 */}
                     {
                       verifyotp === "Verified Successfully" &&<Link to='/profile'><button className='btn btn-primary px-5 ms-5 fw-bold shadow'>Login <LoginSharpIcon className='text-dark'/></button></Link>
                     }

@@ -102,7 +102,7 @@ export default function StrucureAndDetails() {
               if(value === "Yes")
               {
                 setshowState(true);
-               setValues({...values,value:""}); 
+               setValues({...values,value:values.effected}); 
               }
             }
 

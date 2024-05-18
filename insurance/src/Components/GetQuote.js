@@ -25,13 +25,20 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 function GetQuote() 
 {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const location = useLocation();
   const { state } = location;
 
   const [otpValues, setOtpValues] = useState(['', '', '', '']);
-  const [enterotp,SetEnterOtp]=useState("");
+  // const [enterotp,SetEnterOtp]=useState("");
   const [otp, setOtp] = useState(['', '', '', '']); 
+  const [emailotp, SetemailOtp] = useState(['', '', '', '']); 
+  const [verifymobilmsg,Setverifymobilmsg]=useState("");
+  const [verifyemailmsg,Setverifyemailmsg]=useState("");
   const otpInputs = useRef([]);
+  const emailInputs= useRef([]);
 
   const handleOtpInputChange = (index, value) => {
     if (value.match(/[0-9]/)) {
@@ -40,23 +47,37 @@ function GetQuote()
         setOtpValues(newOtpValues);
     }
 };
-const handleOtpChange = (index, value) => {
+const handleMobileOtpChange = (index, value) => {
   if (value.length > 1) return;
   const updatedOtp = [...otp];
   updatedOtp[index] = value;
   setOtp(updatedOtp);
   if (value && index < 4) {
-    if (index < 3) {
+    if (index < 3 && otpInputs.current[index + 1]) {
       otpInputs.current[index + 1].focus();
     }
-    }
-    else if (index > 0) {
-      otpInputs.current[index - 1].focus();
-    }
+  } else if (index > 0 && otpInputs.current[index - 1]) {
+    otpInputs.current[index - 1].focus();
+  }
 };
 
+const handleEmailOtpChange = (index, value) => {
+  if (value.length > 1) return;
+  const updatedemailOtp = [...emailotp];
+  updatedemailOtp[index] = value;
+  SetemailOtp(updatedemailOtp);
+  if (value && index < 4) {
+    if (index < 3 && emailInputs.current[index + 1]) {
+      emailInputs.current[index + 1].focus();
+    }
+  } else if (index > 0 && emailInputs.current[index - 1]) {
+    emailInputs.current[index - 1].focus();
+  }
+};
+
+
   const marketValue = state?.formValues?.marketValue ;
-  console.log( marketValue);
+  // console.log( marketValue);
 
   const security=state?.formValues?.security ;
 
@@ -81,9 +102,47 @@ const handleOtpChange = (index, value) => {
   
   function sendOTP(e){
   e.preventDefault();
-    setshowOTPInput(true);
+    // setshowOTPInput(true);
+    if(regexMobileNo.test(feilds.mobileno)){
+    PropertyInsuranceService.checkMobileNumber(feilds.mobileno).then((res)=>
+      {
+        console.log(res.data);
+        setData(res.data);
+        if(res.data === "Mobile number is not exists"){
+          PropertyInsuranceService.getOtp1().then((res)=>
+          {
+            console.log(res.data);
+            const otpValue=res.data;
+            setOtp(res.data);
+            setshowOTPInput(true);
+            const mobileNumber=values.mobileno;
+            PropertyInsuranceService.getOtp(mobileNumber,otpValue).then((res)=>
+          {
+            console.log(res);
+          }).catch((err)=>
+        {
+
+        });
+          }).catch((error)=>
+        {})
+
+        console.log(showOTPInput);
+        setshowOTPInput(true);
+         
+          //  SetVerifyOtp("");
+        }
+        else if(res.data === "Mobile number exists")
+        {
+          setshowOTPInput(false);
+        }
+        })
     console.log(showOTPInput);
   }
+  else
+  {
+    setshowOTPInput(false);
+  }
+}
   const caliculate1=()=>
   {
     if(marketValue===undefined)
@@ -456,8 +515,6 @@ const handleOtpChange = (index, value) => {
     name: '',
     mobileno: '',
     email: '',
-    password: '',
-    paymentId: '',
     customerId:"",
   });
 
@@ -602,14 +659,14 @@ var i=0;
    const [customer,setCustomer] = useState("");
   const [signUpDetails, setSignUpDetails] = useState([]);
 
-  useEffect(() => {
-    if (values.mobileno) {
-      PropertyInsuranceService.getCustomerIdByMobileNo(values.mobileno)
-        .then((res) => {
-          setSignUpDetails(res.data);   
-    });
-  }
-  });
+  // useEffect(() => {
+  //   if (values.mobileno) {
+  //     PropertyInsuranceService.getCustomerIdByMobileNo(values.mobileno)
+  //       .then((res) => {
+  //         setSignUpDetails(res.data);   
+  //   });
+  // }
+  // });
   
   const signUpRows = signUpDetails.map((details) => (
     <tr key={details.id}>
@@ -620,10 +677,16 @@ var i=0;
   values.email = signUpRowsAsString.join(', ');
 
   // console.log(feilds);
+  const [verify, setVerify]=useState(false);
+ 
   const handleClose = () => setShowModal(false);
   const clickClose =()=> setState(false);
   const clickClosebutton =()=> setLogin(false);
 
+  const closeVerify=()=>
+    {
+  setVerify(false);
+    }
   // navigating signup page :
   const navigate=useNavigate();
 
@@ -634,46 +697,61 @@ var i=0;
     console.log(i);
 
 
-    if(regexUsername.test(feilds.name) && regexMobileNo.test(feilds.mobileno) && regexEmail.test(feilds.email))
+    if(regexUsername.test(feilds.name) && regexMobileNo.test(feilds.mobileno) && regexEmail.test(feilds.email) && isemailverified && ismobileverified)
       {
         const s=feilds.mobileno;
         const d=feilds.email;
         console.log(s)
         console.log(d)
         
+        PropertyInsuranceService.createCustomer(feilds).then(res=>
+          {
+            alert("signup donme");
+            console.log(res.data);
+          }
+        );
+  
       // PropertyInsuranceService.checkEmail(d).then((res)=>{
         
-    //  //   const check=res.data;
-    //     console.log(check);
-    //     setData1(check);
+      //  const check=res.data;
+      //   console.log(check);
+      //   setData1(check);
        
-      //PropertyInsuranceService.checkMobileNumber(s).then((res)=>{
+    //   PropertyInsuranceService.checkMobileNumber(s).then((res)=>{
        
-        //console.log(res.data);
-      //  setData(res.data);
-        //const ch=res.data;
-        //console.log(ch);
+    //     console.log(res.data);
+    //    setData(res.data);
+    //     const ch=res.data;
+    //     console.log(ch);
         
     //     if(ch === "Mobile number is not exists" && check ==="email is not exists")
     //  {
+    
          i++;
    
         console.log(i);
        navigate("/fill", { state: { formData: feilds, premiumData: { year, Premium } ,  marketValue ,buildingAge , security , squareFeet ,pincode,person,effected,i,startingCustomerId} })
      
         console.log("feilds =>"+JSON.stringify(feilds));
-        // PropertyInsuranceService.createCustomer(feilds);
+        PropertyInsuranceService.createCustomer(feilds);
 
       }
-     // })
+
+      else{
+        // alert("please verify email,mobile")
+        setVerify(true);
+        
+        
+      }
+    //  })
   //  })
     
       
-   //   }
+    //  }
 
   }
 
-// i++;
+i++;
   
   const handleClicksignup =(e)=>
       {
@@ -681,8 +759,8 @@ var i=0;
         
         async function performLogin(){
         
-          const response = await PropertyInsuranceService.login(values);
-          //console.log(response)
+          const response = await PropertyInsuranceService.login(feilds);
+          console.log(response)
           const loginResponse = response.data; 
           //  setCustomer(loginResponse);
           console.log('Login Response:', loginResponse);
@@ -735,23 +813,78 @@ var i=0;
           onRest: () => setIsBuyNow(!isBuyNow)
         }); 
 
-        // const [showOTPInput,setshowOTPInput]=useState(false);
+  const [MobileOTPInput,setMobileOTPInput]=useState(false);
   const [EmailOTPInput,setEmailshowOTPInput]=useState(false);
 
  
   
-  function sendOTP(e){
-  e.preventDefault();
-    setshowOTPInput(true);
-    console.log(showOTPInput);
-  }
+  // function sendOTP(e){
+  // e.preventDefault();
+  //   setshowOTPInput(true);
+  //   console.log(showOTPInput);
+  // }
   function sendemailOTP(e){
   e.preventDefault();
-    setEmailshowOTPInput(true);
+    if(regexEmail.test(feilds.email)){
+      PropertyInsuranceService.checkEmail(feilds.email).then((res)=>{
+        console.log(res.data);
+        setData1(res.data)
+    
+        if(res.data==="Email is not exists"){
+          setEmailshowOTPInput(true)
+       
+    PropertyInsuranceService.sendEmailOtp(feilds.email).then((res)=>{
+      setEmailshowOTPInput(true);
+      SetemailOtp(res.data);
+    })
     console.log(EmailOTPInput);
-  }
+  }
+})
+  }
+  else
+  {
+    console.log(feilds.email);
+    setEmailshowOTPInput(false);
+  }
+        
+  }
 
 
+const[ismobileverified, setisMobileVerifired]=useState(false);
+const[isemailverified, setisEmaailverified]=useState(false);
+  const handleverifyEmailOtp=(e)=>{
+    e.preventDefault();
+    console.log("fhfgh")
+    setEmailshowOTPInput(false);
+    const enteredemailotp=otpValues.join('');
+    console.log(emailotp);
+    console.log(enteredemailotp);
+    if(emailotp== enteredemailotp){
+      setEmailshowOTPInput(false)
+      setisMobileVerifired(true);
+    }else{
+      setEmailshowOTPInput(true);
+      Setverifyemailmsg("Invalid OTP...!");
+    }
+
+  }
+  const handleverifyMobileOtp=(e)=>{
+    e.preventDefault();
+    console.log("fhfgh")
+    setMobileOTPInput(false);
+    const enteredmobileotp=otpValues.join('');
+    console.log(enteredmobileotp); 
+    console.log(otp);
+    if(otp==enteredmobileotp){
+      console.log("done")
+      setshowOTPInput(false);
+      setisEmaailverified(true);
+    }else{
+      setMobileOTPInput(true);
+      Setverifymobilmsg("Invalid OTP...!");
+    }
+
+  }
   return (
     <div className='property'>
       <Header/>
@@ -806,7 +939,7 @@ var i=0;
 <div class="card text-center mb-3">
   <div class="card-body bg-light border border-danger rounded shadow">
     <h5 class="card-title text-start bg-danger-subtle rounded fw-bold p-1 text-center">Entire Housing Society</h5>
-    <p class="card-text">Secure your entire housing society against <br/><ul className='d-flex justify-content-evenly fw-semibold mt-1'><li className='me-2'>Fire</li><li className='me-2'>Theft</li><li className='me-2'>Natural disasters</li></ul> </p>
+    <p class="card-text">Secure your entire housing society against <br/><ul className='d-flex justify-content-around fw-semibold mt-1'><li className='me-2'>Fire</li><li className='me-2'>Theft</li><li className='me-2'>Natural disasters</li></ul> </p>
     {/* <button  class="btn text-success border fw-bold"><HomeIcon /></button> */}
   </div>
 </div>
@@ -878,7 +1011,7 @@ var i=0;
       </button> */}
       <button style={{ position: 'relative', width: '150px', height: '50px', overflow: 'hidden' }} className='btn btn-primary rounded buy shadow fw-bold' onClick={handleSignUp} disabled={!year}>
       <animated.div style={{ ...slideAnimation, position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}>
-        {isBuyNow ? 'Buy Now' : ` ${Premium?Premium:0}/-`}
+        {isBuyNow ? 'Buy Now' : ` ₹${Premium?Premium:0}/-`}
       </animated.div>
     </button>
     </div>
@@ -928,7 +1061,7 @@ var i=0;
                     required
                     value={feilds.email}
                     onChange={change}
-                    inputProps={{ maxLength: 30 }}
+                    inputProps={{ maxLength: 50 }}
                     /><br/>
                     <small>
                     {validationErrors.email && <span className="text-danger sdErrmsg">{validationErrors.email}</span>}</small>
@@ -936,7 +1069,7 @@ var i=0;
                     <div style={{float:'right'}} className='col-12 col-lg-4'>
                     <button className='btn btn-success px-3 py-2 rounded mt-2 fw-bold shadow' onClick={sendemailOTP}>Send OTP</button>
                     </div>
-                    {data1 === "email exists" && <h5 className='text-danger'>{data1}</h5>}
+                    {data1 === "Email is exists" && <h5 className='text-danger'>{data1}</h5>}
                     {EmailOTPInput && (
                   <div>
                      <div className='ms-5'>
@@ -950,7 +1083,7 @@ var i=0;
                         ref={(input) => otpInputs.current[index] = input}
                         onChange={(e) => 
                           {handleOtpInputChange(index, e.target.value);
-                          handleOtpChange(index, e.target.value);}}
+                            handleEmailOtpChange(index, e.target.value);}}
                         className='w-25 border ps-2 fw-bold' 
                         maxLength={1} 
                         style={{ marginRight: '8px' }}
@@ -962,8 +1095,9 @@ var i=0;
                         }}
                       />
                        ))}
-                       <button className='btn btn-info text-nowrap fw-bold shadow ms-3'>Verify OTP</button>
+                       <button className='btn btn-info text-nowrap fw-bold shadow ms-3'onClick={handleverifyEmailOtp}>Verify OTP</button>
                       </form>
+                       {verifyemailmsg === "Invalid OTP...!"&& <h5 className='mt-2 ms-2 text-danger'>{verifyemailmsg}</h5>}
                      </div>
                   </div>
                     )}
@@ -1011,7 +1145,7 @@ var i=0;
                        ref={(input) => otpInputs.current[index] = input}
                           onChange={(e) => 
                             {handleOtpInputChange(index, e.target.value);
-                            handleOtpChange(index, e.target.value);}}
+                              handleMobileOtpChange(index, e.target.value);}}
                        onKeyPress={(e) => {
                         const isValidInput = /[0-9]/;
                         if (!isValidInput.test(e.key)) {
@@ -1020,8 +1154,10 @@ var i=0;
                       }}
                       />
                        ))}
-                       <button className='btn btn-info text-nowrap fw-bold shadow ms-3'>Verify OTP</button>
+                       <button className='btn btn-info text-nowrap fw-bold shadow ms-3' onClick={handleverifyMobileOtp}>Verify OTP</button>
                       </form>
+                      {verifymobilmsg === "Invalid OTP...!"&& <h5 className='mt-2 ms-2 text-danger'>{verifymobilmsg}</h5>}
+
                      </div>
                   </div>
                     )}
@@ -1060,6 +1196,18 @@ var i=0;
                 </Modal.Body>
                
             </Modal>
+    </div>
+
+    <div>
+    <Modal show={verify}  className='text-center' >
+
+                <Modal.Body>
+                  <h4 className='mt-5'>Please verify email / mobile </h4>
+                  <button className='btn btn-outline-primary my-5' onClick={closeVerify} >OK</button>
+                </Modal.Body>
+               
+            </Modal>
+
     </div>
     
 

@@ -4,8 +4,12 @@ import { Link, useLocation } from 'react-router-dom';
 import PropertyInsuranceService from './Service/PropertyInsuranceService';
 import { integerRege6, regexEmail, regexHouseNo,  regexMobileNo, regexStreet,  regexUsername } from './RegularExpressions';
 import { TextField } from '@mui/material';
+import AccountCircleSharpIcon from '@mui/icons-material/AccountCircleSharp';
 
 function Profile() {
+    useEffect(() => {
+        window.scrollTo(0, 0);
+      }, []);
     const location = useLocation();
     const { state } = location;
     const [mobileno] = useState(state?.values);
@@ -354,9 +358,9 @@ function Profile() {
     }
 
     return (
-        <div className='row container-fluid'>
+        <div className='row container-fluid pay'>
             <div className='col-3 mt-3 rounded' style={{borderRight:'3px solid grey'}}>
-                <h2 className='text-light fw-bold text-center rounded' style={{background:'#318ce7'}}>Profile</h2>
+                <h2 className='text-light fw-bold text-center rounded' style={{background:'#318ce7'}}>Profile <AccountCircleSharpIcon className='fs-1'/></h2>
                 <div>
                     <h4 className='text-secondary'>Contact Details</h4>
                     <div className='ms-lg-2'>
@@ -597,7 +601,7 @@ function Profile() {
                     
                     <div>
                         <div>
-                        <div className="card shadow mt-3">
+                        <div className="card shadow mt-3 fillOutPage">
                           <div className='d-flex justify-content-around card-header'>
                             <h4 className=' text-start fw-bold text-secondary'> RamanaSecure Living</h4>
                             <h5 className=" text-end"><span className='fw-bold text-secondary'>ID :</span>2434-34ty0-4566y0  <i className="fa-regular fa-copy fs-4 p-2 bg-seconday-subtle"></i></h5>
@@ -611,7 +615,7 @@ function Profile() {
                            <p className="card-text fw-bold">Property Value : <span className='fw-bold text-secondary'>20000000</span></p>
                            </div>
                            <div>
-                           <p className="card-text fw-bold">age of the building : <span className='fw-bold text-secondary'>5 to 10 years</span></p>
+                           <p className="card-text fw-bold">Age of the building : <span className='fw-bold text-secondary'>5 to 10 years</span></p>
                            <p className="card-text fw-bold">Premium Amount: <span className='fw-bold text-secondary '>₹ 53590 /-</span></p>
                            <p className="card-text fw-bold">Address: <span className='fw-bold text-secondary'>1-89,Ameerpet,Hyderabad,Telangana</span></p>
                            </div>
@@ -620,290 +624,6 @@ function Profile() {
                     </div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-
-
-
-
-
-
-            <div className="form-container col-3 mt-3">
-                <button onClick={handleShowForm} style={{ borderRadius: '10000%' }}>Profile</button>
-
-                {showContactForm && (
-                    <>
-                        <h2>Contact Details</h2>
-                        <table className="contact-table ms-5">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <div>
-                                            Name:
-                                            {isEditing ? (
-                                                <input
-                                                    type="text"
-                                                    name="name"
-                                                    value={fillDetails[0]?.fullname}
-                                                    onChange={handleChange}
-                                                />
-                                            ) : (
-                                                <span>{contact.name}</span>
-                                            )}
-                                            <div>
-                                                {isEditing && validationErrors.name && <span className="ms-5 error text-danger">{validationErrors.name}</span>}
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                    <span>
-                                        <span>
-                                            Mobile:
-                                            {isEditingMobile ? (
-                                                <input
-                                                    type="text"
-                                                    name="mobileno"
-                                                    value={contact.mobileno}
-                                                    onChange={handleChange}
-                                                    onKeyPress={(e) => {
-                                                        // Prevent input if the key pressed is not a number
-                                                        const onlyNumbers = /[0-9]/;
-                                                        if (!onlyNumbers.test(e.key)) {
-                                                          e.preventDefault();
-                                                        }
-                                                    }}
-                                                    maxLength={10}
-                                                />
-                                            ) : (
-                                                <span>{contact.mobileno}</span>
-                                            )}</span>
-                                            <span  >
-                                                {isEditingMobile ? (
-                                                    < >
-                                                    <Link onClick={handleSendOTP} className='me-3'>Sendotp</Link>
-                                                    <Link onClick={handleCancel}>Cancel</Link>
-                                                    </>
-                                                ) : (
-                                                    <Link onClick={handleEditMobile} className="ms-5">
-                                                    Update Mobile <i className="fas fa-pencil-alt text-primary"></i>
-                                                </Link>
-                                                )}
-                                            </span>
-                                            {isEditingMobile && validationErrors.mobileno && <span className="ms-5 error text-danger">{validationErrors.mobileno}</span>}
-                                        <div>
-            {data === "Mobile number exists" && <h5 style={{ color: 'red' }}>{data}</h5>}
-          </div>
-                                        </span>
-                                        <div className="text-center my-3">
-                            {renderOTPFieldOrButton()}
-                        </div>
-                                    </td>
-                                    
-                                </tr>
-                                <tr>
-                                    <td>
-                                    <div>
-                                            Email:
-                                            {isEditingEmail ? (
-                                                <input
-                                                    type="text"
-                                                    name="email"
-                                                    value={contact.email}
-                                                    onChange={handleChange}
-                                                     maxLength={100}
-                                                />
-                                            ) : (
-                                                <span>{contact.email}</span>
-                                            )}
-                                            <span >
-                                                {isEditingEmail ? (
-                                                    <>
-                                                    <Link onClick={handleSendOTP1} className='me-3'>Sendotp</Link>
-                                                     <Link onClick={handleCancel}>Cancel</Link>
-                                                    </>
-                                                ) : (
-                                                    <Link onClick={handleEditEmail}className="ms-4">Update Email</Link>
-                                                )}
-                                            </span>
-                                            {isEditingEmail && validationErrors.email && <span className="ms-5 error text-danger">{validationErrors.email}</span>}
-                                            {data === "Email is exists" && <h5 style={{ color: 'red' }}>{data}</h5>}
-                                        </div>
-                                        <div className="text-center my-3">
-                            {renderOTPFieldOrButton1()}
-                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        
-                    </>
-                )}
-
-                {showAddressForm && (
-                    <>
-                        <h2 className='mt-3'>Address Details</h2>
-                        <table className="address-table ms-5">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <div>
-                                            Pincode:
-                                            {isEditingAddress ? (
-                                                <input
-                                                    type="text"
-                                                    name="pincode"
-                                                    value={address.pincode}
-                                                    onChange={handleChange}
-                                                    maxLength={6}
-                                                />
-                                            ) : (
-                                                <span>{address.pincode}</span>
-                                            )}
-                                            <div>
-                                                {isEditingAddress && validationErrors.pincode && <span className="ms-5 error text-danger">{validationErrors.pincode}</span>}
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div>
-                                            House No:
-                                            {isEditingAddress ? (
-                                                <input
-                                                    type="text"
-                                                    name="houseno"
-                                                    value={address.houseno}
-                                                    onChange={handleChange}
-                                                />
-                                            ) : (
-                                                <span>{address.houseno}</span>
-                                            )}
-                                            <div>
-                                                {isEditingAddress && validationErrors.houseno && <span className="ms-5 error text-danger">{validationErrors.houseno}</span>}
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div>
-                                            streetno:
-                                            {isEditingAddress ? (
-                                                <input
-                                                    type="text"
-                                                    name="streetno"
-                                                    value={address.streetno}
-                                                    onChange={handleChange}
-                                                />
-                                            ) : (
-                                                <span>{address.streetno}</span>
-                                            )}
-                                            <div>
-                                                {isEditingAddress && validationErrors.streetno && <span className="ms-5 error text-danger">{validationErrors.streetno}</span>}
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <div className="text-center my-3">
-                            {isEditingAddress ? (
-                                <Link onClick={handleSaveAddress}>Save Address</Link>
-                            ) : (
-                                <Link onClick={handleEditAddress}>Edit Address</Link>
-                            )}
-                        </div>
-                    </>
-                )}
-            </div>
-            <div className='col-8 mt-3'>
-                <div>
-                    <h1>Policy Details</h1>
-                    <table className="table">
-                        <thead>
-                            <tr>
-                                <th>User Name</th>
-                                <th>User Mobile No</th>
-                                <th>User MailId</th>
-                                <th>Property Value</th>
-                                <th>NO OF Years</th>
-                                <th>Premium Amount</th>
-                                <th>Customer ID</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            { 
-                            signUpDetails.map((signUpDetail, index =0) => (
-                                <>
-                                {paymentDetails.map((paymentDetail, paymentIndex=0) => (
-                                    <>
-                                    {0 === paymentIndex && (
-                                        <tr key={`${index}-${paymentIndex}`}>
-                                            <td>{fillDetails[0]?.fullname}</td>
-                                            <td>{signUpDetails[0].mobileno}</td>
-                                            <td>{signUpDetails[0].email}</td>
-                                            {/* <td>{contact.email}</td> */}
-                                            <td>{StrucutureDetails[index]?.marketValue}</td>
-                                            <td>{paymentDetails[0]?.year}</td>
-                                            <td>{paymentDetails[0]?.premium}</td>
-                                            <td>{paymentDetails[0]?.customerId}</td>
-                                        </tr>
-                                    )}
-                                    </>
-                                ))}
-                                </>
-                            ))}
-                            { 
-                            signUpDetails.map((signUpDetail, index =1) => (
-                                <>
-                                {paymentDetails.map((paymentDetail, paymentIndex=1) => (
-                                    <>
-                                    {0 === paymentIndex && (
-                                        <tr key={`${1}-${paymentIndex}`}>
-                                            <td>{fillDetails[1]?.fullname}</td>
-                                            <td>{signUpDetails[0].mobileno}</td>
-                                            <td>{signUpDetails[0].email}</td>
-                                            <td>{StrucutureDetails[1]?.marketValue}</td>
-                                            <td>{paymentDetails[1]?.year}</td>
-                                            <td>{paymentDetails[1]?.premium}</td>
-                                            <td>{paymentDetails[1]?.customerId}</td>
-                                        </tr>
-                                    )}
-                                    </>
-                                ))}
-                                </>
-                            ))}
-                            { 
-                            signUpDetails.map((signUpDetail) => (
-                                <>
-                                {paymentDetails.map(( paymentIndex=1) => (
-                                    <>
-                                    {0 === paymentIndex && (
-                                        <tr key={`${2}-${paymentIndex}`}>
-                                            <td>{fillDetails[2]?.fullname}</td>
-                                            <td>{contact.mobileno}</td>
-                                            <td>{contact.email}</td>
-                                            <td>{StrucutureDetails[2]?.marketValue}</td>
-                                            <td>{paymentDetails[2]?.year}</td>
-                                            <td>{paymentDetails[2]?.premium}</td>
-                                            <td>{paymentDetails[2]?.customerId}</td>
-                                        </tr>
-                                    )}
-                                    </>
-                                ))}
-                                </>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-                <div className='my-3'>
-                    <h3>Quotation Page:</h3>
                 </div>
             </div>
         </div>

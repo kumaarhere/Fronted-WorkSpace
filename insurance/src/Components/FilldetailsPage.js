@@ -13,7 +13,9 @@ import Header from './Header';
 
 function FilldetailsPage() 
 {
-
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const location = useLocation();
   const { state } = location;

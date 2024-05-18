@@ -11,6 +11,9 @@ import safe from '../images/safe.png';
 import Header from '../Header';
 
 function PaymentPage() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const label = { inputProps: { 'aria-label': 'Switch demo' } };
   function handleGoBack(){
     window.history.back();
@@ -209,11 +212,11 @@ const signUpRows = signUpDetails.map((details) => (
         <p className='fw-bold text-secondary'><ArrowBackIcon className='text-primary fs-2 border rounded shadow' onClick={handleGoBack} /> &nbsp; Back to fill Data Form</p>
       </div>
 
-      <div className='col-12 col-md-10 mx-md-5 col-lg-7 mx-2'>
+      <div className='col-12 col-md-10 mx-md-5 col-lg-7  mx-2'>
         <div className="card border-success px-2 shadow mb-3 mx-lg-5 property" style={{ maxWidth: '55rem' }}>
           <div className="card-header bg-transparent border-success">Reference Number : <span className='fw-bold'>56445462321</span></div>
           <div className="card-body py-1">
-            <div className='d-flex flex-lg-row flex-column justify-content-around'>
+            <div className='d-flex flex-lg-row flex-column flex-md-row justify-content-around'>
               <div>
                 <div className='mt-1 mt-lg-5 mx-5'>
                   <img src={RamanaLogo} alt='company-logo' title='RamanaSoft insurance' className='w-50 mx-lg-1 mx-5 rounded shadow'></img>
