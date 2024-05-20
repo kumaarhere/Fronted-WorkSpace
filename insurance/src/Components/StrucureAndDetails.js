@@ -19,7 +19,13 @@ export default function StrucureAndDetails() {
 
 
   const [showState , setshowState] = useState(false);
-  const clickClose =()=> setshowState(false);
+  const clickClose =()=> {setshowState(false);
+    setValues((prevValues) => ({
+      ...prevValues,
+      effected: '',
+      person:""
+    }));
+  }
 
   useEffect(() => {
     // Retrieve values from sessionStorage on component mount
@@ -100,18 +106,30 @@ export default function StrucureAndDetails() {
             else if(name === "effected") 
             {
               if(value === "Yes")
-              {
-                setshowState(true);
-               setValues({...values,value:values.effected}); 
-              }
+                {
+                  setshowState(true);
+                  setValues(
+                    (prevValues) => ({
+                      ...prevValues,
+                      [name]: value,
+                    }),
+                    {...values,value:""}
+                );  
+                }
             }
 
             else if(name === "person")
             {
               if(value === "No" ){
                 setshowState(true);
-                setValues({...values,value:""}); 
-              }
+                setValues(
+                  (prevValues) => ({
+                    ...prevValues,
+                    [name]: value,
+                  }),
+                  {...values,value:""}
+              );                
+            }
             }
 
            e.preventDefault(); 
