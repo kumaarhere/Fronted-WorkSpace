@@ -107,7 +107,27 @@ class PropertyInsuranceService {
         return axios.get(url2);
     }
 
-  
+    static updateCustomerByMobileNo (id, mobileno) {
+        const INSURANCE_API_BASE_URL =`http://192.168.1.2:9092/api/v1/updateCustomerByMobileNo/${id}/${mobileno}`;
+        return axios.put(INSURANCE_API_BASE_URL);
+        }
+    
+        static updateCustomerByEmailId (id,emailId) 
+        {
+            const INSURANCE_API_BASE_URL = `http://192.168.1.2:9092/api/v1/updateCustomerByEmailId/${id}/${emailId}`;
+            return axios.put(INSURANCE_API_BASE_URL);
+         }
+         static sendEmailotp(emailId)
+         {
+            const INSURANCE_API_BASE_URL = `http://192.168.1.2:9092/api/v1/sendEmailOTPforUpdation/${emailId}`;
+            return axios.post(INSURANCE_API_BASE_URL);
+         }
+    
+         static updateFillDetailById(id,address)
+         {
+            const INSURANCE_API_BASE_URL = `http://192.168.1.2:9092/api/v1/updateFillDetails/${id}`;
+            return axios.put(INSURANCE_API_BASE_URL,address);
+         }
 
 }
 

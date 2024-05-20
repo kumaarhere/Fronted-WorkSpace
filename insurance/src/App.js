@@ -9,6 +9,10 @@ import FilldetailsPage from './Components/FilldetailsPage';
 import PaymentPage from './Components/PaymentComponent/PaymentPage';
 import {gapi} from 'gapi-script';
 import Profile from './Components/Profile';
+import ProtectedRoutes from './utils/ProtectedRoutes';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import ErrorPage from './Components/ErrorPage';
 
 const clientId = "246541673533-e90kj0pumgndrmt51j27v853d3pkon00.apps.googleusercontent.com";
 
@@ -33,17 +37,21 @@ function App() {
         <div>
           <Routes>
             <Route exact path="/" element={<Login/>}/>
-            <Route exact path="/login" element={<LoginPage/>}/>
-            <Route exact path="/property" element={<StrucureAndDetails/>}/>
-            <Route path="/admin" element={<AdminPage/>}/>
-            <Route path="/getQuote" element={<GetQuote/>}/>
-            <Route path="/fill" element={<FilldetailsPage/>}/>
-            <Route path="/payment" element={<PaymentPage/>}/>
-            <Route path="/profile" element={<Profile/>}/>
+              <Route exact path="/property" element={<StrucureAndDetails/>}/>
+              <Route path="/getQuote" element={<GetQuote/>}/>
+              <Route path="/*" element={<ErrorPage/>}/>
+
+            <Route element={<ProtectedRoutes/>}>
+              <Route exact path="/login" element={<LoginPage/>}/>
+              <Route path="/admin" element={<AdminPage/>}/>
+              <Route path="/fill" element={<FilldetailsPage/>}/>
+              <Route path="/payment" element={<PaymentPage/>}/>
+              <Route path="/profile" element={<Profile/>}/>
+            </Route>
           </Routes>
         </div>
       </Router>
-    
+    <ToastContainer autoClose={false}/>
     </div>
   )
 }

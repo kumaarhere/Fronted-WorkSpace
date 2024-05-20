@@ -18,6 +18,7 @@ import Offcanvas from 'bootstrap/js/dist/offcanvas';
 import Button from 'bootstrap/js/dist/button';
 import Dropdown from 'bootstrap/js/dist/dropdown';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import {toast } from 'react-toastify';
 
 
 
@@ -31,12 +32,14 @@ function GetQuote()
   const location = useLocation();
   const { state } = location;
 
-  const [otpValues, setOtpValues] = useState(['', '', '', '']);
+  const [otpValues, setOtpValues] = useState(Array(4).fill(''));
   // const [enterotp,SetEnterOtp]=useState("");
-  const [otp, setOtp] = useState(['', '', '', '']); 
-  const [emailotp, SetemailOtp] = useState(['', '', '', '']); 
+  const [otp, setOtp] = useState(Array(4).fill('')); 
+  const [emailotp, SetemailOtp] = useState(Array(4).fill('')); 
   const [verifymobilmsg,Setverifymobilmsg]=useState("");
   const [verifyemailmsg,Setverifyemailmsg]=useState("");
+  const [emailverified,setemailverified]=useState("send OTP");
+  const [mobileverified,setmobileverified]=useState("send OTP");
   const otpInputs = useRef([]);
   const emailInputs= useRef([]);
 
@@ -49,9 +52,11 @@ function GetQuote()
 };
 const handleMobileOtpChange = (index, value) => {
   if (value.length > 1) return;
+
   const updatedOtp = [...otp];
   updatedOtp[index] = value;
   setOtp(updatedOtp);
+
   if (value && index < 4) {
     if (index < 3 && otpInputs.current[index + 1]) {
       otpInputs.current[index + 1].focus();
@@ -706,7 +711,7 @@ var i=0;
         
         PropertyInsuranceService.createCustomer(feilds).then(res=>
           {
-            alert("signup donme");
+            // alert("signup donme");
             console.log(res.data);
           }
         );
@@ -733,13 +738,13 @@ var i=0;
        navigate("/fill", { state: { formData: feilds, premiumData: { year, Premium } ,  marketValue ,buildingAge , security , squareFeet ,pincode,person,effected,i,startingCustomerId} })
      
         console.log("feilds =>"+JSON.stringify(feilds));
-        PropertyInsuranceService.createCustomer(feilds);
+        // PropertyInsuranceService.createCustomer(feilds);
 
       }
 
       else{
         // alert("please verify email,mobile")
-        setVerify(true);
+       toast.error("please verify email,mobile");
         
         
       }
@@ -861,6 +866,7 @@ const[isemailverified, setisEmaailverified]=useState(false);
     console.log(enteredemailotp);
     if(emailotp== enteredemailotp){
       setEmailshowOTPInput(false)
+      setemailverified("verified 🗸")
       setisMobileVerifired(true);
     }else{
       setEmailshowOTPInput(true);
@@ -868,6 +874,7 @@ const[isemailverified, setisEmaailverified]=useState(false);
     }
 
   }
+
   const handleverifyMobileOtp=(e)=>{
     e.preventDefault();
     console.log("fhfgh")
@@ -878,6 +885,7 @@ const[isemailverified, setisEmaailverified]=useState(false);
     if(otp==enteredmobileotp){
       console.log("done")
       setshowOTPInput(false);
+      setmobileverified("verified 🗸")
       setisEmaailverified(true);
     }else{
       setMobileOTPInput(true);
@@ -1047,7 +1055,9 @@ const[isemailverified, setisEmaailverified]=useState(false);
                     value={feilds.name}
                     onChange={change}
                     inputProps={{ maxLength: 30 }}
-                  /><br/>{validationErrors.name && <span className="text-danger">{validationErrors.name}</span>}<br/>
+                   
+                  />
+                  <br/>{validationErrors.name && <span className="text-danger">{validationErrors.name}</span>}<br/>
                   <div className='row'>
                     <div className='col-12 col-lg-8'>
                   
@@ -1067,7 +1077,7 @@ const[isemailverified, setisEmaailverified]=useState(false);
                     {validationErrors.email && <span className="text-danger sdErrmsg">{validationErrors.email}</span>}</small>
                     </div>
                     <div style={{float:'right'}} className='col-12 col-lg-4'>
-                    <button className='btn btn-success px-3 py-2 rounded mt-2 fw-bold shadow' onClick={sendemailOTP}>Send OTP</button>
+                    <button className='btn btn-success px-3 py-2 rounded mt-2 fw-bold shadow verification' onClick={sendemailOTP}>{emailverified}</button>
                     </div>
                     {data1 === "Email is exists" && <h5 className='text-danger'>{data1}</h5>}
                     {EmailOTPInput && (
@@ -1080,7 +1090,7 @@ const[isemailverified, setisEmaailverified]=useState(false);
                         key={index} 
                         type="text"
                         autoFocus={index === 0}
-                        ref={(input) => otpInputs.current[index] = input}
+                        ref={(input) => emailInputs.current[index] = input}
                         onChange={(e) => 
                           {handleOtpInputChange(index, e.target.value);
                             handleEmailOtpChange(index, e.target.value);}}
@@ -1128,7 +1138,7 @@ const[isemailverified, setisEmaailverified]=useState(false);
                     </div>
 
                   <div style={{float:'right'}} className='col-12 col-lg-4'>
-                    <button className='btn btn-success px-3 py-2 rounded mt-2 fw-bold shadow' onClick={sendOTP}>Send OTP</button>
+                    <button className='btn btn-success px-3 py-2 rounded mt-2 fw-bold shadow' onClick={sendOTP}>{mobileverified}</button>
                   </div>
                   {data === "Mobile number exists" && <h5 className='text-danger'>{data}</h5>}
                   {showOTPInput && (
@@ -1192,24 +1202,11 @@ const[isemailverified, setisEmaailverified]=useState(false);
 
                 <Modal.Body>
                   <h4 className='mt-5'>Please Enter the Property Details</h4>
-                  <button className='btn btn-outline-primary my-5' onClick={urlOk} >OK</button>
+                  <button className='btn btn-outline-primary my-5 px-4' onClick={urlOk} >OK</button>
                 </Modal.Body>
                
             </Modal>
     </div>
-
-    <div>
-    <Modal show={verify}  className='text-center' >
-
-                <Modal.Body>
-                  <h4 className='mt-5'>Please verify email / mobile </h4>
-                  <button className='btn btn-outline-primary my-5' onClick={closeVerify} >OK</button>
-                </Modal.Body>
-               
-            </Modal>
-
-    </div>
-    
 
     </div>
   );

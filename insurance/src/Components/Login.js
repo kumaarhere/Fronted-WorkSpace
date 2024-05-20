@@ -30,9 +30,10 @@ const clientId = "246541673533-e90kj0pumgndrmt51j27v853d3pkon00.apps.googleuserc
 
 function Login() {
   // var i = 0 ;
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+
+  useEffect(()=>{
+    window.scrollTo(0,0);
+  },[])
 
   const [otpValues, setOtpValues] = useState(['', '', '', '']);
   const [enterotp,SetEnterOtp]=useState("");
@@ -197,29 +198,33 @@ function Login() {
     }
     else{SetVerifyOtp("Invalid OTP...!")}
   };
+  const HandleLogin=()=>
+    {
+      navigate('/profile',{state:{values:values.mobileno}})
+    }
 
     return (
       <div className='container-fluid logbac'>
         <div style={{position:'fixed',width:'100%'}}><Header/></div>
         
-        <div className='row mt-3'>
-          <div className='col-12 col-lg-7 mt-2'style={{height:'70vh'}}>
-            <div className='mt-5 pt-3 ms-4'>
-              <h4 className='text-secondary branddesc'><span className=''style={{textDecoration:'underline',textDecorationColor:'brown'}}>Choose</span> Confidence: Choose Ramanasoft Insurance.</h4>
+        <div className='row mt-5 mt-lg-3'>
+          <div className='col-12 col-lg-7 mt-2 lcdiv'style={{height:'63vh'}}>
+            <div className='mt-4 pt-3 ms-4'>
+              <h4 className='text-secondary branddesc mt-2'><span className=''style={{textDecoration:'underline',textDecorationColor:'brown'}}>Choose</span> Confidence: Choose Ramanasoft Insurance.</h4>
               <h3 className='fw-bold'>Life is unpredictable,<h3 className='fw-bold'>insurance makes it manageable.</h3></h3>
             </div>
             <div>
-              <img src={Happy} alt='get Happy life' className='LHomeImg h-50 ps-4 mx-5' style={{zIndex:'-1'}}/>
+              <img src={Happy} alt='get Happy life'style={{zIndex:'-1'}} className='LHomeImg ps-4 mx-5'/>
             </div>
             {/* <button className='btn btn-primary mx-3 mt-5' onClick={handleClick} >PropertyInsurance</button> */}
           </div>
-          <div className='col-12 col-lg-5 mt-lg-5 pt-lg-5'>
-          <form onSubmit={HandleSubmit} className='form-inline border rounded bg-light me-5 shadow mt-5' >
+          <div className='col-12 col-md-10 ms-md-5 ms-lg-0 ms-2 col-lg-5 mt-lg-2 pt-lg-4'>
+          <form onSubmit={HandleSubmit} className='form-inline border rounded bg-light me-lg-4 shadow mt-5'>
               <div className='text-center fw-bold bg-success-subtle p-2 rounded '><h3>Customer Login <AccountCircleSharpIcon className='fs-2'/></h3></div>
-              <div className='mx-5 my-3 p-2'>
-                <h3 className='fw-bold'>Hello Customer,</h3>
+              <div className='mx-lg-2 my-3 px-2'>
+                <h3 className='fw-semibold'>Hello Customer,</h3>
                 <TextField
-                  className='col-8 '
+                  className='col-lg-7 col-md-7 col-10 '
                   id="outlined-basic"
                   label="Mobile No."
                   placeholder="Enter Your Mobile No."
@@ -236,9 +241,10 @@ function Login() {
                   }}
                   />
                   <span>
-                <button className='btn btn-success rounded fw-bold shadow mt-2 mx-3 py-2' onClick={sendOTP}>Send OTP</button></span>
+                <button className='btn btn-success rounded fw-bold shadow mt-2 mx-2 ms-3 py-2' onClick={sendOTP}>Send OTP</button></span>
                   <br/>
-                  {validationErrors.mobileno && <span className="text-danger">{validationErrors.mobileno}</span>}
+                  <small>
+                  {validationErrors.mobileno && <span className="text-danger">{validationErrors.mobileno}</span>}</small>
                   {data === "Mobile number is not exists" && <h4 className='text-danger mt-2 ms-lg-3'>{data}</h4>}
                 {showOTPInput && (
                   <div>
@@ -254,7 +260,7 @@ function Login() {
                           onChange={(e) => 
                             {handleOtpInputChange(index, e.target.value);
                             handleOtpChange(index, e.target.value);}}
-                          className='w-25 border ps-3 fw-semibold' 
+                          className='w-25 border ps-lg-3 fw-semibold rounded' 
                           maxLength={1} 
                           style={{ marginRight: '8px' }} 
                           onKeyPress={(e) => {
@@ -265,20 +271,20 @@ function Login() {
                           }}
                         />
                        ))}
-                       <button className='btn btn-info text-nowrap fw-bold shadow ms-2' onClick={handleVerifyMobileNoOtp}>Verify OTP</button><br/>
+                       <button className='btn btn-info text-nowrap fw-bold shadow ms-1' onClick={handleVerifyMobileNoOtp}>Verify OTP</button><br/>
                       </form>
                       {verifyotp ===  "Invalid OTP...!" && <h4 className='text-danger ms-2 mt-2'>{verifyotp}<i className="fa-solid fa-xmark ms-2"></i></h4>}
                      </div>
                   </div>
                     )}
-                 {verifyotp ===  "Verified Successfully" && <h4 className='text-success mt-2 ms-2'>{verifyotp}<CheckCircleOutlineIcon/></h4>}
-                <div className='mt-4 ms-5'>
-                    {/* <button className='btn btn-link me-5 text-decoration-none fw-bold' onClick={handleClick} >Create Account ? </button>                 */}
+                 {verifyotp ===  "Verified Successfully" && <h4 className='text-success mt-lg-3 ms-2'>{verifyotp}<CheckCircleOutlineIcon/></h4>}
+                <div className='mt-lg-3 d-flex justify-content-center'>
+                    {/* <button className='btn btn-link  text-decoration-none fw-bold' onClick={handleClick} >Create Account ? </button>                 */}
                     {
-                      verifyotp === "Verified Successfully" &&<Link to='/profile'><button className='btn btn-primary px-5 ms-5 fw-bold shadow'>Login <LoginSharpIcon className='text-dark'/></button></Link>
+                    verifyotp === "Verified Successfully" &&<button className='btn btn-primary fw-bold shadow' onClick={HandleLogin}>Login <LoginSharpIcon className='text-dark'/></button>
                     }
                     {
-                      verifyotp !== "Verified Successfully" &&<button className='btn btn-primary px-5 ms-5 fw-bold shadow disabled'>Login <LoginSharpIcon className='text-dark'/> </button>
+                      verifyotp !== "Verified Successfully" &&<button className='btn btn-primary fw-bold shadow disabled'>Login <LoginSharpIcon className='text-dark'/> </button>
                     }
                  </div>
               </div>
@@ -287,78 +293,81 @@ function Login() {
               </div> */}
             </form>
           </div>
-          <div className='homeDetail'>
-          <h3 className='branddesc mt-lg-5 pt-lg-5 mx-5 text-secondary'>Ramanasoft Insurance: Where Protection Extends Across <span style={{textDecoration:'underline',textDecorationColor:'brown'}}>Multiple Domains</span></h3>
+          <div className='homeDetail mt-2 mt-md-4'>
+          <h4 className='branddesc mx-lg-3 text-secondary'>Ramanasoft Insurance: Where Protection Extends Across <span style={{textDecoration:'underline',textDecorationColor:'brown'}}>Multiple Domains</span></h4>
           </div>
-          <div className=' d-flex  justify-content-evenly mt-2'>
+          <div className=' d-flex justify-content-evenly mt-lg-1 py-lg-0 py-2 lbdiv'>
+            <div className='lbcard'>
+              <Link to='/property'className=' text-decoration-none ' >
+                <div class="card shadow bg-light" style={{width:'8rem',zIndex:'-1'}}>
+                  <div class="card-body">
+                  <span className='text-white ms-2 fw-bold bg-success rounded px-2 py-1'>New <NewReleasesIcon/></span>
+                  <img src={propertyIn} alt="..." className="img-fluid aspect-ratio-4-3 mx-1 "/>
+                  {/* <a href="#" class="btn btn-primary mx-5 fw-bold text-nowrap shadow mt-2">Property Insurance</a> */}
+                  </div>
+                </div>
+              </Link>
+              <h6 className='text-center mt-1'>Property Insurance</h6>
+            </div>
+            <div>
+            <div class="card shadow bg-light" style={{width:'8rem',zIndex:'-1'}}>
+              <div class="card-body">
+                <span className='text-dark  fw-bold bg-warning rounded p-2'>Upcoming  </span>
+                <img src={HealthIn} alt="..." className="img-fluid aspect-ratio-4-3 w-100 mx-1 "/>
+                {/* <a href="#" class="btn btn-primary mx-5 fw-bold text-nowrap shadow mt-2 disabled">Health Insurance</a> */}
+              </div>
+            </div>
+            <h6 className='text-center mt-1'>Health Insurance</h6>
+            </div>
           <div>
-            <Link to='/property'className=' text-decoration-none ' >
-          <div class="card mt-4 shadow bg-light" style={{width:' 16rem',zIndex:'-1'}}>
-          <div class="card-body">
-          <span className='text-white  fw-bold bg-success rounded px-2 py-2'>New <NewReleasesIcon/></span>
-          <img src={propertyIn} alt="..." className="img-fluid aspect-ratio-4-3 w-100 mx-1 "/>
-          <a href="#" class="btn btn-primary mx-5 fw-bold text-nowrap shadow mt-2">Property Insurance</a>
-          </div>
-          </div>
-          </Link>
-          </div>
-          <div>
-          <div class="card mt-4 shadow bg-light" style={{width:' 16rem',zIndex:'-1'}}>
-          <div class="card-body">
-            <span className='text-dark  fw-bold bg-warning rounded p-1'>Upcoming  <NewReleasesIcon/></span>
-          <img src={HealthIn} alt="..." className="img-fluid aspect-ratio-4-3 w-100 mx-1 "/>
-          <a href="#" class="btn btn-primary mx-5 fw-bold text-nowrap shadow mt-2 disabled">Health Insurance</a>
-          </div>
+            <div class="card shadow bg-light" style={{width:' 8rem',zIndex:'-1'}}>
+              <div class="card-body">
+                <span className='text-dark  fw-bold bg-warning rounded p-1'>Upcoming </span>
+                <img src={VehicleIn} alt="..." className="img-fluid aspect-ratio-4-3 w-100 mx-1 "/>
+                {/* <a href="#" class="btn btn-primary mx-5 fw-bold text-nowrap shadow mt-2 disabled">Vehicle Insurance</a> */}
+              </div>
+            </div>
+            <h6 className='text-center mt-1'>Vehicle Insurance</h6>
           </div>
           </div>
           <div>
-          <div class="card mt-4 shadow bg-light" style={{width:' 16rem',zIndex:'-1'}}>
-          <div class="card-body">
-          <span className='text-dark  fw-bold bg-warning rounded p-1'>Upcoming <NewReleasesIcon/></span>
-          <img src={VehicleIn} alt="..." className="img-fluid aspect-ratio-4-3 w-100 mx-1 "/>
-          <a href="#" class="btn btn-primary mx-5 fw-bold text-nowrap shadow mt-2 disabled">Vehicle Insurance</a>
-          </div>
-          </div>
-          </div>
-          </div>
-          <div>
-            <div className='d-flex'>
-              <div className='ms-5 col-5 mt-5 pt-5'>
+            <div className='row'>
+              <div className='ms-lg-5 col-12 col-lg-5 pt-5'>
                 <h2 className='branddesc'>Have a Question?</h2>
                 <h2 className='branddesc'>Here <span style={{textDecoration:'underline',textDecorationColor:'brown'}}>to Help</span> </h2>
                 <p className='mt-4 fw-semibold'>Get quick assistance from Ramanasoft Insurance via phone or email. Whether you have questions, need help with claims, or want to learn about our coverage, our team is here for you. Reach out today for reliable support.</p>
                 <div>
-                  <div className='row w-75 border mt-5 p-2 rounded shadow'>
-                    <div className='col-1 mt-4 p-2'style={{borderRight:'3px solid #ccc'}}>
+                  <div className='row  w-100 border mt-5 p-2 rounded shadow'>
+                    <div className='col-2 col-lg-1 mt-4 me-lg-2 p-2'style={{borderRight:'3px solid #ccc'}}>
                      <MailOutlineIcon/>
                     </div>
-                    <div className='col'>
+                    <div className='col-8 col-lg-9 lbmail'>
                       <p className='text-secondary fw-bold'>For General Enquires</p>
                       <h4 className='fw-bold'>Ramanasoftpvtltd@gmail.com</h4>
                     </div>
                   </div>
-                  <div className='row w-75 border mt-5 p-2 rounded shadow'>
-                    <div className='col-1 mt-4 p-2'style={{borderRight:'3px solid #ccc'}}>
+                  <div className='row w-100 border mt-5 p-2 rounded shadow'>
+                    <div className='col-2 col-lg-1 mt-4 me-2 p-2'style={{borderRight:'3px solid #ccc'}}>
                     <SupportAgentIcon/>
                     </div>
-                    <div className='col '>
+                    <div className='col-8 col-lg-9'>
                       <p className='text-secondary fw-bold '>For Customer Care</p>
                       <h4 className='fw-bold'>1800-258-2465</h4>
                     </div>
                   </div>
                 </div>
               </div>
-              <div>
-                <img src={CustomerCare} alt="..." className="img-fluid rounded"/>
-              </div>
+                <div className='col-lg-5 col-12 mx-lg-0 mx-3 mt-lg-0 mt-3'>
+                  <img src={CustomerCare} alt="..." className="img-fluid rounded"/>
+                </div>
             </div>
             <hr>
             </hr>
-            <div className='footer px-5 mx-5'>
+            <div className='footer px-1 mx-1 px-lg-5 mx-lg-5'>
               <p className='text-center fw-semibold'>RamanaSoft Insurance Company is a trusted name in insurance, known for its tailored solutions and customer-centric approach. With a focus on technology and personalized service, RamanaSoft offers a range of insurance products for individuals and businesses. Committed to excellence and social responsibility, RamanaSoft is a reliable partner for protecting what matters most.</p>
             </div>
              <div>
-              <div className='d-flex justify-content-center align-items-center '><img src={Ramanalogo} alt="..." className="img-responsive rounded"style={{width:'130px'}}/></div>
+              <div className='d-flex justify-content-center align-items-center'><img src={Ramanalogo} alt="..." className="img-responsive rounded"style={{width:'130px'}}/></div>
               
               <p className='text-center fw-bold fs-5 mt-2 text-secondary'>&copy; All Rights Reserved 2024.</p>
              </div>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 // import './Profile.css';
 import { Link, useLocation } from 'react-router-dom';
 import PropertyInsuranceService from './Service/PropertyInsuranceService';
-import { integerRege6, regexEmail, regexHouseNo,  regexMobileNo, regexStreet,  regexUsername } from './RegularExpressions';
+import { integerRege6, regexEmail, regexFullName, regexHouseNo,  regexMobileNo, regexStreet,  regexUsername } from './RegularExpressions';
 import { TextField } from '@mui/material';
 import AccountCircleSharpIcon from '@mui/icons-material/AccountCircleSharp';
 
@@ -13,6 +13,7 @@ function Profile() {
     const location = useLocation();
     const { state } = location;
     const [mobileno] = useState(state?.values);
+    // const mobileno = 8074266396;
 
     const storedMobileNumber = sessionStorage.getItem('mobileNumber');
     sessionStorage.setItem('mobileNumber', mobileno);
@@ -39,6 +40,8 @@ function Profile() {
     const [address, setAddress] = useState({
         pincode:"",
         houseno:"",
+        city:"",
+        state:"",
         streetno:""
     });
 
@@ -47,6 +50,8 @@ function Profile() {
         mobileno: '',
         email: '',
         pincode: '',
+        city:"",
+        state:"",
         houseno: '',
         streetno: '',
     });
@@ -96,6 +101,12 @@ function Profile() {
             case 'streetno':
                 setValidationErrors({ ...validationErrors, [name]: regexStreet.test(value) ? '' : 'Enter valid streetno name' });
                 break;
+            case 'city':
+                setValidationErrors({ ...validationErrors, [name]: regexFullName.test(value) ? '' : 'Enter valid city name' });
+                break;
+            case 'state':
+                setValidationErrors({ ...validationErrors, [name]: regexFullName.test(value) ? '' : 'Enter valid state name' });
+                break;
             default:
                 break;
         }
@@ -144,6 +155,8 @@ function Profile() {
             pincode:fillDetails[0]?.pincode,
             houseno:fillDetails[0]?.houseno,
             streetno: fillDetails[0]?.streetno,
+            city:fillDetails[0]?.city,
+            state:fillDetails[0]?.state
         });
     }, [signUpDetails,fillDetails]);
 
@@ -165,15 +178,23 @@ function Profile() {
     const handleSaveMobile = () => {
         // e.preventDefault();
         if (regexMobileNo.test(contact.mobileno)) {
-            const id = signUpDetails[0]?.id;
-            PropertyInsuranceService.updateCustomerByMobileNo(id,contact).then((res) => {
-                console.log("details :"+ res.data);
-                const updateResponse = res.data;
-                console.log(updateResponse);
-                setIsEditingMobile(false);
-            }).catch((error) => {
-                            console.error();
-                        });
+            var id=signUpDetails[0].id;
+        var mobno=contact.mobileno;
+console.log(id,mobno)
+if (id && mobno) {
+    PropertyInsuranceService.updateCustomerByMobileNo(id, mobno)
+        .then((res) => {
+            console.log("details:", res.data);
+            const updateResponse = res.data;
+            console.log(updateResponse);
+            setIsEditingMobile(false);
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+} else {
+    console.error("ID or mobile number is missing");
+}
         }
     };
 
@@ -181,8 +202,9 @@ function Profile() {
         // e.preventDefault();
         const email=contact.email
         if (regexEmail.test(email)) {
-            const id = signUpDetails[0]?.id;
-            PropertyInsuranceService.updateCustomerByEmailId(id,contact).then((res) => {
+            var id = signUpDetails[0]?.id;
+            var emailId=contact.email;
+            PropertyInsuranceService.updateCustomerByEmailId(id,emailId).then((res) => {
                 console.log("details :"+ res.data);
                 const updateResponse = res.data;
                 console.log(updateResponse);
@@ -195,25 +217,29 @@ function Profile() {
 
     const handleSaveAddress = (e) => {
         e.preventDefault();
-        if(regexHouseNo.test(address.houseno) && regexStreet.test(address.streetno) && integerRege6.test(address.pincode)) {
+console.log(address);
+        if(regexHouseNo.test(address.houseno) && regexStreet.test(address.streetno) && regexFullName.test(address.city)&& regexFullName.test(address.state) && integerRege6.test (address.pincode)) {
             console.log(fillDetails);
             for (let i = 0; i < fillDetails.length; i++) {
                 const id = fillDetails[i]?.id;
                 console.log(id);
-                PropertyInsuranceService.updateFillDetailsById(id,address).then((res) => {
+                PropertyInsuranceService.updateFillDetailById(id,address).then((res) => {
                     console.log("details :"+ res.data);
                     const updateResponse = res.data;
                     console.log(updateResponse);
                     setIsEditingAddress(false);
                 });
             }
+            setIsEditingAddress(false);
         }
-        setIsEditingAddress(false);
+        
     };
 
     const handleSendOTP = () => {
 
-        
+       console.log(contact.mobileno); 
+       if(regexMobileNo.test(contact.mobileno))
+        {
         PropertyInsuranceService.checkMobileNumber(contact.mobileno).then((res)=>
     {
 
@@ -237,7 +263,8 @@ function Profile() {
     }).catch(error => {
         console.error(error);
       });
-
+    }
+    else {setData("")}
     };
     const handleSendOTP1 = () => {
 
@@ -252,8 +279,8 @@ function Profile() {
   {
 
         setOtpSent1(true);
-        console.log(otp,enteredOtp);
-        PropertyInsuranceService.getEmailOtp(contact.email).then((res) => {
+        // console.log(otp,enteredOtp);
+        PropertyInsuranceService.sendEmailotp(contact.email).then((res) => {
             console.log(res.data);
             const otp=res.data;
             SetEnterOtp(res.data);
@@ -270,12 +297,15 @@ function Profile() {
     };
 
     const handleVerifyOTP = () => {
-
-        if (otp === enteredOtp.toString()) {
+console.log(signUpDetails,contact.mobileno)
+        if (otp == enteredOtp.toString()) {
             setNotVerified("Mobile Number Verified Successfully!");
             //navigate("/login",{state:{values:mobileNumber}})
            signUpDetails[0].mobileno=contact.mobileno;
+        //    var id=signUpDetails[0].id;
+        // var mobn=contact.mobileno;
             handleSaveMobile();
+            // console.log(mobn,id)
             setVerified(true);
             setOtpSent(false);
         setIsEditingMobile(false);
@@ -290,7 +320,7 @@ function Profile() {
     };
     const handleVerifyOTP1 = () => {
        
-            if (otp === enteredOtp.toString()) {
+            if (otp == enteredOtp.toString()) {
                  setNotVerified(" Verified Successfully!");
                  //navigate("/login",{state:{values:mobileNumber}})
                  signUpDetails[0].email=contact.email;
@@ -357,9 +387,12 @@ function Profile() {
         setNotVerified("");
     }
 
+    console.log(address)
+    console.log(signUpDetails,StrucutureDetails,fillDetails,paymentDetails)
+
     return (
         <div className='row container-fluid pay'>
-            <div className='col-3 mt-3 rounded' style={{borderRight:'3px solid grey'}}>
+            <div className='col-12 col-lg-3 col-md-4 mt-3 rounded line' style={{borderRight:'3px solid grey'}}>
                 <h2 className='text-light fw-bold text-center rounded' style={{background:'#318ce7'}}>Profile <AccountCircleSharpIcon className='fs-1'/></h2>
                 <div>
                     <h4 className='text-secondary'>Contact Details</h4>
@@ -375,14 +408,13 @@ function Profile() {
                             ) : ( */}
                                 <TextField
                                     className='col-12 col-lg-11 mt-2'
-                                    id="outlined-disabled-input"
-                                    label="Name"
+                                    id="outlined-input"
+                                    // label="Name"
                                     name='name'
-                                    onChange={handleChange}
-                                    defaultValue={contact.name}
+                                    value={fillDetails[0]?.fullname}
                                     InputProps={{
-                                    disabled: true,
-                                    className:'fw-bold',
+                                    disabled:true,
+                                    className:'fw-bold text-secondary',
                                     }}
                                 />
                             {/* // <span className='fw-bold text-dark mx-2'>{contact.name}</span> */}
@@ -425,21 +457,23 @@ function Profile() {
                                     }}
                                 />
                             )}
+                            <div>{data === "Mobile number exists" && <h5 style={{ color: 'red' }}>{data}</h5>}</div>
+                        <small>
+                        {isEditingMobile && validationErrors.mobileno && <span className="ms-3 error text-danger">{validationErrors.mobileno}</span>}
+                        </small>
                         <p className='mt-2 text-center me-5'>
                             {isEditingMobile ? (
                                 <>
                                     <Link onClick={handleSendOTP} className='me-4 text-decoration-none text-success'>Send OTP</Link>
                                     <Link onClick={handleCancel} className='text-decoration-none text-danger'>Cancel</Link>
                                 </>
+
                             ) : (
                                 <Link onClick={handleEditMobile} className=" text-decoration-none ">
                                    Update <i className="fas fa-pencil-alt text-primary"></i>
                                 </Link>
                             )}
                         </p>
-                        <small>
-                        {isEditingMobile && validationErrors.mobileno && <span className="ms-3 error text-danger">{validationErrors.mobileno}</span>}
-                        </small>
                         <div className="text-center my-2">
                             {renderOTPFieldOrButton()}
                         </div>
@@ -463,7 +497,7 @@ function Profile() {
                                     label="E-Mail"
                                     name='email'
                                     onChange={handleChange}
-                                    defaultValue={contact.email}
+                                    value={contact.email}
                                     InputProps={{
                                     disabled: true,
                                     className:'fw-bold',
@@ -496,7 +530,7 @@ function Profile() {
                                     type="text"
                                     className='col-12 col-lg-11 mt-2'
                                     name="houseno"
-                                    label="House No."
+                                    // label="House No."
                                     variant="outlined"
                                     value={address.houseno}
                                     onChange={handleChange}
@@ -506,10 +540,10 @@ function Profile() {
                                 <TextField
                                     className='col-12 col-lg-11 mt-2'
                                     id="outlined-disabled-input"
-                                    label="House No."
+                                    // label="House No."
                                     name='houseno'
                                     onChange={handleChange}
-                                    defaultValue={address.houseno}
+                                    value={address.houseno}
                                     InputProps={{
                                     disabled: true,
                                     className:'fw-bold',
@@ -525,7 +559,7 @@ function Profile() {
                                     type="text"
                                     className='col-12 col-lg-11 mt-2'
                                     name="streetno"
-                                    label="Street No."
+                                    // label="Street No."
                                     variant="outlined"
                                     value={address.streetno}
                                     onChange={handleChange}
@@ -535,10 +569,10 @@ function Profile() {
                                 <TextField
                                     className='col-12 col-lg-11 mt-2'
                                     id="outlined-disabled-input"
-                                    label="Street No."
+                                    // label="Street No."
                                     name='streetno'
                                     onChange={handleChange}
-                                    defaultValue={address.streetno}
+                                    value={address.streetno}
                                     InputProps={{
                                     disabled: true,
                                     className:'fw-bold',
@@ -553,8 +587,76 @@ function Profile() {
                                 <TextField
                                     type="text"
                                     className='col-12 col-lg-11 mt-2'
+                                    name="city"
+                                    // label="City"
+                                    variant="outlined"
+                                    value={address.city}
+                                    required
+                                    onChange={handleChange}
+                                    // onKeyPress={(e) => {
+                                    //     // Prevent input if the key pressed is not a number
+                                    //     const onlyNumbers = /[0-9]/;
+                                    //     if (!onlyNumbers.test(e.key)) {
+                                    //         e.preventDefault();
+                                    //     }
+                                    //     }}
+                                    inputProps={{maxLength : 40}}
+                                />
+                            ) : (
+                                <TextField
+                                    className='col-12 col-lg-11 mt-2'
+                                    id="outlined-disabled-input"
+                                    // label="City"
+                                    name='city'
+                                    onChange={handleChange}
+                                    value={address.city}
+                                
+                                    InputProps={{
+                                    disabled: true,
+                                    className:'fw-bold',
+                                    }}
+                                />
+                        )}<small>
+                        {isEditingAddress && validationErrors.city && <span className="ms-5 error text-danger">{validationErrors.city}</span>}</small>
+                    </div>
+                    <div>
+                        {isEditingAddress ?
+                            (
+                                <TextField
+                                    type="text"
+                                    className='col-12 col-lg-11 mt-2'
+                                    name="state"
+                                    // label="state"
+                                    variant="outlined"
+                                    value={address.state}
+                                    onChange={handleChange}
+                                    required
+                                    inputProps={{maxLength : 40}}
+                                />
+                            ) : (
+                                <TextField
+                                    className='col-12 col-lg-11 mt-2'
+                                    id="outlined-disabled-input"
+                                    // label="state"
+                                    name='state'
+                                    onChange={handleChange}
+                                    value={address.state}
+                                    InputProps={{
+                                    disabled: true,
+                                    className:'fw-bold',
+                                    }}
+                                />
+                        )}<small>
+                        {isEditingAddress && validationErrors.state && <span className="ms-5 error text-danger">{validationErrors.state}</span>}</small>
+                    </div>
+                    <div>
+                        {isEditingAddress ?
+                            (
+                                <TextField
+                                    type="text"
+                                    className='col-12 col-lg-11 mt-2'
                                     name="pincode"
-                                    label="Pincode"
+                                    // label="Pincode"
                                     variant="outlined"
                                     value={address.pincode}
                                     onChange={handleChange}
@@ -571,10 +673,10 @@ function Profile() {
                                 <TextField
                                     className='col-12 col-lg-11 mt-2'
                                     id="outlined-disabled-input"
-                                    label="Pincode"
+                                    // label="Pincode"
                                     name='pincode'
                                     onChange={handleChange}
-                                    defaultValue={address.pincode}
+                                    value={address.pincode}
                                     InputProps={{
                                     disabled: true,
                                     className:'fw-bold',
@@ -593,39 +695,70 @@ function Profile() {
                     </div>
                 </div>
             </div>
-            <div className='col-9 mt-3'>
-                <h2 className='text-light fw-bold text-center rounded' style={{background:'#318ce7'}}>Policy Details</h2>
+            <div className='col-12 col-lg-9 col-md-8 mt-3'>
+                <h2 className='text-light fw-bold text-center rounded' style={{background:'#318ce7'}}>Policy Details<span><Link to='/'><button className='btn btn-danger float-end me-2 fw-bold py-1 mt-1'>Log Out</button></Link></span></h2>
                 <div className='ms-2'>
                     <h4 className='text-secondary'>Customer Details</h4>
                     {/* new table */}
                     
                     <div>
-                        <div>
                         <div className="card shadow mt-3 fillOutPage">
-                          <div className='d-flex justify-content-around card-header'>
-                            <h4 className=' text-start fw-bold text-secondary'> RamanaSecure Living</h4>
-                            <h5 className=" text-end"><span className='fw-bold text-secondary'>ID :</span>2434-34ty0-4566y0  <i className="fa-regular fa-copy fs-4 p-2 bg-seconday-subtle"></i></h5>
-                          </div>
-                          <div className="card-body">
-                           <div className='d-flex justify-content-around'>
-                            <div className=''>
-                           <p className="card-text fw-bold">Name : <span className='fw-bold text-secondary'>Sree HarshaVardhan</span></p>
-                           <p className="card-text fw-bold">Email: <span className='fw-bold text-secondary '>sreeharshavardhan@gmail.com</span></p>
-                           <p className="card-text fw-bold">Mobile : <span className='fw-bold text-secondary '>+917993277707</span></p>
-                           <p className="card-text fw-bold">Property Value : <span className='fw-bold text-secondary'>20000000</span></p>
-                           </div>
-                           <div>
-                           <p className="card-text fw-bold">Age of the building : <span className='fw-bold text-secondary'>5 to 10 years</span></p>
-                           <p className="card-text fw-bold">Premium Amount: <span className='fw-bold text-secondary '>₹ 53590 /-</span></p>
-                           <p className="card-text fw-bold">Address: <span className='fw-bold text-secondary'>1-89,Ameerpet,Hyderabad,Telangana</span></p>
-                           </div>
-                           </div>
-                        </div>
-                    </div>
+                            <div className="card-header pcdetails d-flex justify-content-between flex-wrap">
+                                <h4 className="text-start fw-bold text-secondary">RamanaSecure Living</h4>
+                                <h5 className="text-end mt-2 mt-md-0">
+                                <span className="fw-bold text-secondary">ID :</span>
+                                {signUpDetails[0]?.customerId}
+                                </h5>
+                            </div>
+                            <div className="card-body">
+                                <div className="row pcdetails">
+                                <div className="col-md-6">
+                                    <p className="card-text fw-bold">
+                                    Name &nbsp;&nbsp;: <span className="fw-bold text-secondary">
+                                        {signUpDetails[0]?.name}
+                                    </span>
+                                    </p>
+                                    <p className="card-text fw-bold">
+                                    Email &nbsp;&nbsp;&nbsp;: <span className="fw-bold text-secondary">
+                                        {signUpDetails[0]?.email}
+                                    </span>
+                                    </p>
+                                    <p className="card-text fw-bold">
+                                    Mobile&nbsp; :<span className="fw-bold text-secondary"> {mobileno}</span>
+                                    </p>
+                                    <p className="card-text fw-bold">
+                                    Address : <span className="fw-bold text-secondary">
+                                        { fillDetails[0]?.propertyhouseNo }
+                                        {fillDetails[0]?.propertystreetNo}
+                                        {fillDetails[0]?.propertypincode}
+                                        {fillDetails[0]?.propertycity}
+                                        {fillDetails[0]?.propertystate}
+                                    </span>
+                                    </p>
+                                </div>
+                                <div className="col-md-6 mt-3 mt-md-0">
+                                    <p className="card-text fw-bold">
+                                    Age of the building : <span className="fw-bold text-secondary">
+                                        {StrucutureDetails[0]?.buildingAge}
+                                    </span>
+                                    </p>
+                                    <p className="card-text fw-bold">
+                                    Premium Amount &nbsp;&nbsp;&nbsp;: <span className="fw-bold text-secondary"> ₹{paymentDetails[0]?.premium} /-</span>
+                                    </p>
+                                    <p className="card-text fw-bold">
+                                    Property Value &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : <span className="fw-bold text-secondary"> {StrucutureDetails[0]?.marketValue}</span>
+                                    </p>
+                                    <p className="card-text fw-bold">
+                                    No. Of Years &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : <span className="fw-bold text-secondary"> {paymentDetails[0]?.year}&nbsp;Years</span>
+                                    </p>
+                                </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
     );
 }

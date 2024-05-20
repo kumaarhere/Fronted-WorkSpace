@@ -1,5 +1,5 @@
 import React,{useEffect, useState} from 'react';
- import {  useLocation,} from 'react-router-dom';
+ import {  useLocation, useNavigate,} from 'react-router-dom';
   import p4 from '../images/p4.jpeg'
 import PropertyInsuranceService from '../Service/PropertyInsuranceService';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -43,12 +43,17 @@ function PaymentPage() {
  const   pincode = state?.userDetails?.pincode;
  const  houseno = state?.userDetails?.houseno;
  const  streetno = state?.userDetails?.streetno;
- 
-
+ const Intialcity=state?.userDetails?.city;
+ const PropertyCity=state?.userDetails?.propertycity;
+ const Intialstate=state?.userDetails?.state;
+ const Propertystate=state?.userDetails?.propertystate;
 // data from premium page:
   const year = premiumData?.year;
   const premium = premiumData?.Premium;
   
+  const fillDetailsAlluserRelated=state?.userDetails
+  console.log(JSON.stringify(fillDetailsAlluserRelated));
+  // console.log(Intialcity,Intialstate,fillDetailsAlluserRelated);
 
   // data from structure and details page :
 const marketValue = state?.marketValue;
@@ -111,13 +116,17 @@ const [dataValues] = useState({
   fullname: name,
   pancard: pancard,
   dob: dob,
-  propertypincode: propertypincode,
+  propertypincode: userpincode,
   propertyhouseNo: propertyhouseNo,
   propertystreetNo: propertystreetNo,
+  propertycity:fillDetailsAlluserRelated.propertycity, 
+  propertystate: fillDetailsAlluserRelated.propertystate,
   currentaddress: address,
-  pincode: address === 'yes' ? propertypincode : pincode,
+  pincode: address === 'yes' ? userpincode : pincode,
   houseno: address === 'yes' ? propertyhouseNo : houseno,
   streetno: address === 'yes' ? propertystreetNo : streetno,
+  city:address === 'yes' ? fillDetailsAlluserRelated.propertycity : fillDetailsAlluserRelated.city,
+  state:address === 'yes' ? fillDetailsAlluserRelated.propertystate : fillDetailsAlluserRelated.state,
   customerId:"",
   paymentId:"",
 });
@@ -127,6 +136,8 @@ const signUpRows = signUpDetails.map((details) => (
    {details.customerId}
   </tr>
 ));
+
+const navigate=useNavigate("");
 
   //current date & term end date  for policy
   const currentDate = new Date();
@@ -152,7 +163,8 @@ const signUpRows = signUpDetails.map((details) => (
   dataValues.customerId = signUpRowsAsString.join(', ');
   values.customerId = signUpRowsAsString.join(', ');
 
- 
+  console.log(Intialcity,Intialstate,fillDetailsAlluserRelated);
+console.log(fillDetailsAlluserRelated.propertycity,fillDetailsAlluserRelated.propertystate);
 
   const handleClick=()=>{
      const var4= 'https://api.razorpay.com/v1/payments/qr_codes/qr_FuZIYx6rMbP6gs';
@@ -181,9 +193,13 @@ const signUpRows = signUpDetails.map((details) => (
       console.log("values =>"+JSON.stringify(values));
 
     PropertyInsuranceService.createPaymentData(details);
-    // PropertyInsuranceService.createCustomer(feilds);
+    // // PropertyInsuranceService.createCustomer(feilds);
       PropertyInsuranceService.createfillDetails(dataValues);
       PropertyInsuranceService.createDetails(values)
+
+      alert("Payment SuccessFully Completed Thank You");
+      navigate("/");
+
       
     },
     
@@ -230,10 +246,7 @@ const signUpRows = signUpDetails.map((details) => (
                   <p className='text-secondary'>Policy Period</p>
                   <p className='fw-bold'>{year?year:0}years</p>
                 </div>
-                <div>
-                  <p className='text-secondary'>Household items Sum Insured</p>
-                  <p className='fw-bold'>&#8377;{marketValue?marketValue:0}{' '}Lakhs</p>
-                </div>
+                
                 <div>
                   <p className='text-secondary'>Policy Start Date</p>
                   <p className='fw-bold'>{formattedStartDate}</p>
@@ -242,13 +255,11 @@ const signUpRows = signUpDetails.map((details) => (
               <div>
                 <div>
                   <p className='text-secondary'>Building Sum Insured</p>
-                  <p className='fw-bold'>&#8377; 6 Lakhs</p>
+                  <p className='fw-bold'>&#8377;{marketValue?marketValue:0}</p>
                 </div>
-                <div className='mt-lg-5 '>
+                <div className=' '>
                   <div>
                     <p className='text-secondary'>Policy End Date</p>
-                  </div>
-                  <div>
                     <p className='fw-bold'>{formattedEndDate}</p>
                   </div>
                 </div>
@@ -263,7 +274,6 @@ const signUpRows = signUpDetails.map((details) => (
               <div className='col-12 col-lg-6'>
                 <p>Grand Total</p>
                 <p><span className='fw-bold fs-4'>&#8377;{premium?premium:0}/-</span>(inclusive of all taxes)</p>
-                <h6 className='text-nowrap fs-6'>Get updates on <WhatsAppIcon className='text-success' title='WhatsApp' /> WhatsApp <Switch {...label} defaultChecked /></h6>
               </div>
               <div className='col-12 col-lg-6'>
                 <div>
@@ -286,6 +296,8 @@ const signUpRows = signUpDetails.map((details) => (
       <div className='px-5 me-lg-3'>
         <p className='text-center'>RamanaSoft Insurance Pvt.Ltd located at Aditya Trade center, Ameerpet. Hyderabad 500073.<br /> for more enquiries please contact <a href="mailto:ramanasoftpvtltd@gmail.com">ramanasoftpvtltd@gmail.com</a>.</p>
       </div>
+      {/* {values.customerId} */}
+      {/* {Intialcity} */}
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {  useLocation, useNavigate } from 'react-router-dom';
-import {  integerRege6, regexHouseNo, regexPanCard, regexStreet, regexUsername } from './RegularExpressions';
+import {  integerRege6, regexHouseNo, regexPanCard, regexStreet, regexUsername,regexCity, regexState } from './RegularExpressions';
 import PropertyInsuranceService from './Service/PropertyInsuranceService';
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import { Modal } from 'react-bootstrap';
@@ -71,9 +71,13 @@ function FilldetailsPage()
       propertypincode:'',
       propertyhouseNo:'',
       propertystreetNo:'',
+      propertycity:"",
+      propertystate:"",
       pincode:'',
       houseno:'',
       streetno:'',
+      city:"",
+      state:"",
   }
   );
 
@@ -143,7 +147,25 @@ function FilldetailsPage()
           setValidationErrors({ ...validationErrors, [name]: "" });
         }
       }
+      
 
+      //validattion for propertyCity;
+      if(name === "propertycity"){
+        if(!regexCity.test(value)){
+          setValidationErrors({ ...validationErrors, [name]: "Please enter valid city name" });
+        } else {
+          setValidationErrors({ ...validationErrors, [name]: "" });
+        }
+      }
+
+      //validation for propertyState:
+      if(name === "propertystate"){
+        if(!regexState.test(value)){
+          setValidationErrors({ ...validationErrors, [name]: "Please enter valid state name" });
+        } else {
+          setValidationErrors({ ...validationErrors, [name]: "" });
+        }
+      }
 
       // permanent Address :
       // validation for pincode :
@@ -168,6 +190,24 @@ function FilldetailsPage()
       if(name === "streetno"){
         if(!regexStreet.test(value)){
           setValidationErrors({ ...validationErrors, [name]: "Please enter valid street no " });
+        } else {
+          setValidationErrors({ ...validationErrors, [name]: "" });
+        }
+      }
+
+      //validation for city:
+      if(name === "city"){
+        if(!regexCity.test(value)){
+          setValidationErrors({ ...validationErrors, [name]: "Please enter valid city name " });
+        } else {
+          setValidationErrors({ ...validationErrors, [name]: "" });
+        }
+      }
+
+      //validation for state:
+      if(name === "state"){
+        if(!regexState.test(value)){
+          setValidationErrors({ ...validationErrors, [name]: "Please enter valid state name " });
         } else {
           setValidationErrors({ ...validationErrors, [name]: "" });
         }
@@ -215,8 +255,15 @@ function FilldetailsPage()
                   required
                   value={data.city}
                   onChange={handleChange}
+                  onKeyPress={(e) => {
+                    // Prevent input if the key pressed is not a number
+                    const onlyNumbers = /[a-zA-Z]/;
+                    if (!onlyNumbers.test(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
                   /><br/>
-                  {/* {validationErrors.streetno && <span className="text-danger">{validationErrors.streetno}</span>} */}
+                  {validationErrors.city && <span className="text-danger">{validationErrors.city}</span>}
                 </div>
                <div className='col-12 col-lg-4 mt-3 mt-3'>
                 <TextField
@@ -228,8 +275,15 @@ function FilldetailsPage()
                   required
                   value={data.state}
                   onChange={handleChange}
+                  onKeyPress={(e) => {
+                    // Prevent input if the key pressed is not a number
+                    const onlyNumbers = /[a-zA-Z]/;
+                    if (!onlyNumbers.test(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
                   /><br/>
-                  {/* {validationErrors.streetno && <span className="text-danger">{validationErrors.streetno}</span>} */}
+                  {validationErrors.state && <span className="text-danger">{validationErrors.state}</span>}
                 </div>
                 <div className='col-12 col-lg-4 mt-3'>
                 <TextField
@@ -242,6 +296,13 @@ function FilldetailsPage()
                   value={data.pincode}
                   onChange={handleChange}
                   inputProps={{ maxLength: 6 }}
+                  onKeyPress={(e) => {
+                    // Prevent input if the key pressed is not a alpha
+                    const onlyNumbers = /[0-9]/;
+                    if (!onlyNumbers.test(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
                 />
                 <br/>
                 {validationErrors.pincode && <span className="text-danger">{validationErrors.pincode}</span>}
@@ -302,19 +363,17 @@ useEffect(() => {
       console.log(data.mobno);
       // return; // Stop further execution
     
-
+      console.log(data);
   if(data.currentaddress === "yes" && regexUsername.test(data.fullname) && regexPanCard.test(data.pancard) && regexHouseNo.test(data.propertyhouseNo) && regexStreet.test(data.propertystreetNo) && data.mobno!== ("" || undefined))
   {
      navigate("/payment",{state:{marketValue,security,squareFeet,buildingAge,pincode,person,effected,startingCustomerId,formData,premiumData,userDetails : data}});
       console.log("ji");
     
   }
-  else if(data.currentaddress === "no" && regexUsername.test(data.fullname) && regexPanCard.test(data.pancard) && integerRege6.test(data.propertypincode) && regexHouseNo.test(data.propertyhouseNo)  && regexStreet.test(data.propertystreetNo) && integerRege6.test(data.pincode) && regexHouseNo.test(data.houseno) && regexStreet.test(data.streetno) && data.mobno!== ("" || undefined)){
-   
-    navigate("/payment",{state:{marketValue,security,squareFeet,buildingAge,pincode,person,effected,startingCustomerId,formData,premiumData , userDetails : data}});
-
-    
-  }
+  else {if(data.currentaddress === "no" && regexUsername.test(data.fullname) && regexPanCard.test(data.pancard) && regexHouseNo.test(data.propertyhouseNo)  && regexStreet.test(data.propertystreetNo) && integerRege6.test(data.pincode) && regexHouseNo.test(data.houseno) && regexStreet.test(data.streetno) && data.mobno!== ("" || undefined)){
+   console.log(data);
+    navigate("/payment",{state:{marketValue,security,squareFeet,buildingAge,pincode,person,effected,startingCustomerId,formData,premiumData , userDetails : data}});    
+  }}
   // Save form data to session storage
   sessionStorage.setItem('formData', JSON.stringify(data));
 
@@ -395,6 +454,13 @@ useEffect(() => {
                     value={data.fullname.toUpperCase()}
                     onChange={handleChange}
                     inputProps={{ maxLength: 30 }}
+                    onKeyPress={(e) => {
+                      // Prevent input if the key pressed is not a number
+                      const onlyNumbers = /[a-zA-Z]/;
+                      if (!onlyNumbers.test(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
                     /><br/>
                     {validationErrors.fullname && <span className="text-danger">{validationErrors.fullname}</span>}
 
@@ -418,7 +484,7 @@ useEffect(() => {
                     </div>
                     <div className=' col-12 col-lg-6 mb-2'>
                     <label className="control-label w-50 mt-2" ><span className='fw-semibold text-secondary FillDOB'>Date of Birth</span>
-                    <input type='date' name='dob'  min="1924-01-01" max={minDateFormatted}  value={data.dob} required className=' FillDOBInput p-1 rounded' onChange={handleChange} />  </label><br/>
+                    <input type='date' name='dob'  min="1924-01-01" max={minDateFormatted}  value={data.dob} required className=' FillDOBInput p-1 rounded ms-1' onChange={handleChange} />  </label><br/>
                     {validationErrors.dob && <span className="text-danger">{validationErrors.dob}</span>}
                     </div>
 
@@ -490,8 +556,15 @@ useEffect(() => {
                           required
                           value={data.propertycity}
                           onChange={handleChange}
+                          onKeyPress={(e) => {
+                            // Prevent input if the key pressed is not a number
+                            const onlyNumbers = /[a-zA-Z]/;
+                            if (!onlyNumbers.test(e.key)) {
+                              e.preventDefault();
+                            }
+                          }}
                         /><br/>
-                        {/* {validationErrors.propertystreetNo && <span className="text-danger">{validationErrors.propertystreetNo}</span>} */}
+                        {validationErrors.propertycity && <span className="text-danger">{validationErrors.propertycity}</span>}
                       </div>
                       <div className='col-12 col-lg-4 mt-3'>
                         <TextField
@@ -503,8 +576,15 @@ useEffect(() => {
                           required
                           value={data.propertystate}
                           onChange={handleChange}
+                          onKeyPress={(e) => {
+                            // Prevent input if the key pressed is not a number
+                            const onlyNumbers = /[a-zA-Z]/;
+                            if (!onlyNumbers.test(e.key)) {
+                              e.preventDefault();
+                            }
+                          }}
                         /><br/>
-                        {/* {validationErrors.propertystreetNo && <span className="text-danger">{validationErrors.propertystreetNo}</span>} */}
+                        {validationErrors.propertystate && <span className="text-danger">{validationErrors.propertystate}</span>}
                       </div>
                       <div className='col-12 col-lg-4 mt-3'>
                         <TextField
