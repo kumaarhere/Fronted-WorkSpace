@@ -1,12 +1,29 @@
 import React, { useState, useEffect } from 'react';
 // import './Profile.css';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import PropertyInsuranceService from './Service/PropertyInsuranceService';
 import { integerRege6, regexEmail, regexFullName, regexHouseNo,  regexMobileNo, regexStreet,  regexUsername } from './RegularExpressions';
-import { TextField } from '@mui/material';
+import { FormLabel, TextField } from '@mui/material';
 import AccountCircleSharpIcon from '@mui/icons-material/AccountCircleSharp';
+import p3 from '../Components/images/p3.jpeg';
+import '../App.css';
+import PhoneIcon from '@mui/icons-material/Phone';
+import Button from '@mui/material/Button';
+import { ClickAwayListener, Tooltip } from '@mui/material';
+import LogoutIcon from '@mui/icons-material/Logout';
+
 
 function Profile() {
+
+    const [open, setOpen] = useState(false);
+    const handleTooltipClose = () => {
+        setOpen(false);
+      };
+    
+      const handleTooltipOpen = () => {
+        setOpen(true);
+      };
+
     useEffect(() => {
         window.scrollTo(0, 0);
       }, []);
@@ -112,30 +129,40 @@ function Profile() {
         }
     };
 
-    useEffect(() => {     
-        PropertyInsuranceService.getCustomerIdByMobileNo(storedMobileNumber)
-            .then((res) => {
+    useEffect(() => {
+        const fetchCustomerData = async () => {
+            try {
+                const res = await PropertyInsuranceService.getCustomerIdByMobileNo(storedMobileNumber);
                 setSignUpDetails(res.data);
                 const customerId = res.data[0]?.customerId;
                 if (customerId) {
-                    PropertyInsuranceService.getStructureDetailsByCustomerId(customerId)
-                        .then((res) => {
-                            setStructureDetails(res.data);
-                        });
-                    PropertyInsuranceService.getFillDetailsByCustomerId(customerId)
-                        .then((res) => {
-                            setFilldetails(res.data);
-                        });
-                    PropertyInsuranceService.getPaymentDetailsByCustomerId(customerId)
-                        .then((res) => {
-                            setPaymentDetails(res.data);
-                        })
-                        .catch((error) => {
-                            console.error();
-                        });
+                    try {
+                        const structureRes = await PropertyInsuranceService.getStructureDetailsByCustomerId(customerId);
+                        setStructureDetails(structureRes.data);
+                    } catch (error) {
+                        console.error('Error fetching structure details:', error);
+                    }
+                    try {
+                        const fillRes = await PropertyInsuranceService.getFillDetailsByCustomerId(customerId);
+                        setFilldetails(fillRes.data);
+                    } catch (error) {
+                        console.error('Error fetching fill details:', error);
+                    }
+                    try {
+                        const paymentRes = await PropertyInsuranceService.getPaymentDetailsByCustomerId(customerId);
+                        setPaymentDetails(paymentRes.data);
+                    } catch (error) {
+                        console.error('Error fetching payment details:', error);
+                    }
                 }
-            });
-        }, []); 
+            } catch (error) {
+                console.error('Error fetching customer ID:', error);
+            }
+        };
+
+        fetchCustomerData();
+    }, [storedMobileNumber]);
+
 
     const handleShowForm = (e) => {
         e.preventDefault();
@@ -144,7 +171,8 @@ function Profile() {
     };
 
     useEffect(() => {
-        setContact({
+        try {
+             setContact({
             ...contact,
             email: signUpDetails[0]?.email,
             mobileno: signUpDetails[0]?.mobileno,
@@ -158,6 +186,10 @@ function Profile() {
             city:fillDetails[0]?.city,
             state:fillDetails[0]?.state
         });
+        } catch (error) {
+        console.log("error occured",error);
+        }
+       
     }, [signUpDetails,fillDetails]);
 
     const handleEditAddress = (e) => {
@@ -342,15 +374,22 @@ console.log(signUpDetails,contact.mobileno)
         if (otpSent) {
             return (
                 <div>
-                    <label>Enter OTP:</label>
-              <input 
+                    {/* <label>Enter OTP:</label> */}
+                    <TextField
+                        id="outlined-basic"
+                        placeholder='Enter OTP'
+                        label="OTP"
+                        value={otp}
+                        onChange={(e) => setOtp(e.target.value)}
+                    />
+              {/* <input 
                 type="text" 
                 placeholder="Enter OTP" 
                 value={otp} 
-                onChange={(e) => setOtp(e.target.value)} 
-              />
-                    <button onClick={handleVerifyOTP}>Verify</button>
-                    <p>{notVerified}</p>
+                onChange={} 
+              /> */}
+                    <button onClick={handleVerifyOTP} className='btn btn-success mt-2'>Verify</button>
+                    {/* <p>{notVerified}</p> */}
                 </div>
             );
         }
@@ -360,15 +399,22 @@ console.log(signUpDetails,contact.mobileno)
         if (otpSent1) {
             return (
                 <div>
-                    <label>Enter OTP:</label>
-              <input 
+                    {/* <label>Enter OTP:</label> */}
+                    <TextField
+                        id="outlined-basic"
+                        placeholder='Enter OTP'
+                        label="OTP"
+                        value={otp}
+                        onChange={(e) => setOtp(e.target.value)}
+                    />
+              {/* <input 
                 type="text" 
                 placeholder="Enter OTP" 
                 value={otp} 
                 onChange={(e) => setOtp(e.target.value)} 
-              />
-                    <button onClick={handleVerifyOTP1}>Verify</button>
-                    <p>{notVerified}</p>
+              /> */}
+                    <button onClick={handleVerifyOTP1} className='btn btn-success'>Verify</button>
+                    {/* <p>{notVerified}</p> */}
                 </div>
             );
         }
@@ -379,6 +425,18 @@ console.log(signUpDetails,contact.mobileno)
         setOtpSent1(false);
         setOtpSent(false);
         setIsEditingMobile(false);
+        // setIsEditingEmail(false);
+        contact.mobileno=signUpDetails[0].mobileno;
+        contact.email=signUpDetails[0].email;
+        setValidationErrors("");
+        setData("");
+        setNotVerified("");
+    }
+    const handleCancel1=()=>
+    {
+        setOtpSent1(false);
+        setOtpSent(false);
+        // setIsEditingMobile(false);
         setIsEditingEmail(false);
         contact.mobileno=signUpDetails[0].mobileno;
         contact.email=signUpDetails[0].email;
@@ -386,15 +444,181 @@ console.log(signUpDetails,contact.mobileno)
         setData("");
         setNotVerified("");
     }
+    const handleCancel2=()=>
+    {
+        // setOtpSent1(false);
+        // setOtpSent(false);
+        // setIsEditingMobile(false);
+        // setIsEditingEmail(false);
+        setIsEditingAddress(false);
+        address.houseno = fillDetails[0].houseno;
+        address.streetno = fillDetails[0].streetno;
+        address.city = fillDetails[0].city;
+        address.state = fillDetails[0].state;
+        address.pincode = fillDetails[0].pincode;
+        // contact.mobileno=signUpDetails[0].mobileno;
+        // contact.email=signUpDetails[0].email;
+        setValidationErrors("");
+        // setData("");
+        setNotVerified("");
+    }
+
+    let navigate = useNavigate();
+
+    const HandleNewPolicy =()=>{
+        var i =1;
+       var emailId= signUpDetails[0].email;
+        navigate("/property",{state:{i,mobileno,emailId}})
+    }
 
     console.log(address)
     console.log(signUpDetails,StrucutureDetails,fillDetails,paymentDetails)
 
+    const interartingCustomerDetails = () => {
+        return (
+            <div>
+            {fillDetails.length === 0 ? (
+                <>
+                <h3 className="text-center mt-4"><button className='mx-5 fs-4 btn btn-link' onClick={HandleNewPolicy}>  Get any policy</button></h3>
+                </>
+            ) : (
+                fillDetails.map((_, index) => (
+                    <div key={index}>
+                        <div className="card shadow mt-3 fillOutPage">
+                            <div className="card-header pcdetails d-flex justify-content-between flex-wrap">
+                                <h4 className="text-start fw-bold text-secondary">
+                                    RamanaSecure Living Insurance : {index + 1}
+                                </h4>
+                                <h5 className="text-end mt-2 mt-md-0">
+                                    <span className="fw-bold text-secondary">ID :</span>
+                                    {paymentDetails[index]?.customerId}
+                                </h5>
+                            </div>
+                            <div className="card-body">
+                                <div className="row pcdetails">
+                                    <div className="col-md-6" style={{borderRight:'solid 2px #dcdcdc'}}>
+                                        <p className="card-text fw-bold">
+                                            Name &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 
+                                            <span className="fw-bold text-secondary">
+                                            &nbsp; {fillDetails[index]?.fullname}
+                                            </span>
+                                        </p>
+                                        {/* 
+                                        <p className="card-text fw-bold">
+                                            Email &nbsp;&nbsp;&nbsp;: <span className="fw-bold text-secondary">
+                                                {signUpDetails[0]?.email}
+                                            </span>
+                                        </p>
+                                        <p className="card-text fw-bold">
+                                            Mobile&nbsp; :<span className="fw-bold text-secondary"> {mobileno}</span>
+                                        </p> 
+                                        */}
+                                        <p className="card-text fw-bold">
+                                            Property Value &nbsp;&nbsp;&nbsp; : 
+                                            <span className="fw-bold text-secondary">
+                                            &nbsp;{StrucutureDetails[index]?.marketValue}
+                                            </span>
+                                        </p>
+                                        <p className="card-text fw-bold">
+                                            Square Feet &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 
+                                            <span className="fw-bold text-secondary">
+                                            &nbsp;{StrucutureDetails[index]?.squareFeet}
+                                            </span>
+                                        </p>
+                                        <div className='d-flex'>
+                                        <p className="card-text fw-bold col-4">
+                                    Address &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;: </p>
+                                    <span className="fw-bold text-secondary col-8">
+                                    &nbsp;{fillDetails[index]?.propertyhouseNo} ,&nbsp;
+                                        {fillDetails[index]?.propertystreetNo} ,&nbsp;
+                                        {fillDetails[index]?.propertycity} , &nbsp;
+                                        {fillDetails[index]?.propertystate} ,&nbsp;
+                                        {fillDetails[index]?.propertypincode}
+                                    </span>
+                                    </div>
+                                    </div>
+                                    <div className="col-md-6 mt-3 mt-md-0">
+                                        {/* 
+                                        <p className="card-text fw-bold">
+                                            Age of the building : <span className="fw-bold text-secondary">
+                                                {StrucutureDetails[index]?.buildingAge}
+                                            </span>
+                                        </p> 
+                                        */}
+                                        <p className="card-text fw-bold">
+                                            Premium Amount &nbsp; &nbsp;&nbsp;: 
+                                            <span className="fw-bold text-secondary">
+                                            &nbsp;₹ {paymentDetails[index]?.premium} /-
+                                            </span>
+                                        </p>
+                                        {/* 
+                                        <p className="card-text fw-bold">
+                                            Property Value &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : 
+                                            <span className="fw-bold text-secondary"> 
+                                                {StrucutureDetails[index]?.marketValue}
+                                            </span>
+                                        </p> 
+                                        */}
+                                        <p className="card-text fw-bold">
+                                            No. of Years &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : 
+                                            <span className="fw-bold text-secondary">
+                                            &nbsp;{paymentDetails[index]?.year}&nbsp;Years
+                                            </span>
+                                        </p>
+                                        <p className="card-text fw-bold">
+                                            Age of the building &nbsp; : 
+                                            <span className="fw-bold text-secondary">
+                                            &nbsp;{StrucutureDetails[index]?.buildingAge}
+                                            </span>
+                                        </p>
+                                        <button className='mx-5 btn btn-link' onClick={HandleNewPolicy}>  Get new policy</button>
+                                    </div>
+                                </div>
+                                <div className='d-flex justify-content-end'>
+                                    <a href='#' download='Invoice' className='btn btn-success'><i className="fa-solid fa-download me-2"></i>Invoice</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ))
+            )}
+        </div>
+        );
+    };
+
     return (
         <div className='row container-fluid pay'>
+            <div className='text-center mb-5' >
+                <header >
+      <div class="d-flex justify-content-between align-items-center  py-2 rounded fixed" style={{background:'#f0f8ff'}} >
+				<div className="" >
+        <img class="mx-3 ramana" src={p3} alt="my pic" title='RamanaSoft Insurance' style={{borderRadius:'10px'}}></img>
+				</div> 
+				<div className="ms-auto me-3 ">
+          <ClickAwayListener onClickAway={handleTooltipClose}>
+            <div className=''>
+              <Tooltip
+                PopperProps={{
+                  disablePortal: true,
+                }}
+                onClose={handleTooltipClose}
+                open={open}
+                disableFocusListener
+                disableHoverListener
+                disableTouchListener
+                title="1800-143-123"
+              >
+                <Button onClick={handleTooltipOpen} className='text-center me-lg-4 text-nowrap'><PhoneIcon />&nbsp;Call Us </Button>
+              </Tooltip>
+            </div>
+          </ClickAwayListener>
+				</div> 
+			</div>
+                </header>
+            </div>
             <div className='col-12 col-lg-3 col-md-4 mt-3 rounded line' style={{borderRight:'3px solid grey'}}>
                 <h2 className='text-light fw-bold text-center rounded' style={{background:'#318ce7'}}>Profile <AccountCircleSharpIcon className='fs-1'/></h2>
-                <div>
+                <div className='overflow-y-scroll' style={{height:'78vh'}}>
                     <h4 className='text-secondary'>Contact Details</h4>
                     <div className='ms-lg-2'>
                         {/* <span className='fw-semibold'>Name:</span> */}
@@ -406,12 +630,15 @@ console.log(signUpDetails,contact.mobileno)
                                 onChange={handleChange}
                             />
                             ) : ( */}
+                            <FormLabel>Name</FormLabel>
+
                                 <TextField
-                                    className='col-12 col-lg-11 mt-2'
-                                    id="outlined-input"
-                                    // label="Name"
+                                    className='col-12 col-lg-11'
+                                    id="outlined-disabled-input"
+                                    // label="Name "
                                     name='name'
                                     value={fillDetails[0]?.fullname}
+                                    defaultValue={fillDetails[0]?.fullname}
                                     InputProps={{
                                     disabled:true,
                                     className:'fw-bold text-secondary',
@@ -425,12 +652,14 @@ console.log(signUpDetails,contact.mobileno)
                         </small>
                     </div>
                     <div className='ms-lg-2 mt-2'>
+                        <FormLabel>Mobile No</FormLabel>
                         {isEditingMobile ? (
+                            <div>
                             <TextField
                                 type="text"
-                                className='col-12 col-lg-11 mt-2'
+                                className='col-12 col-lg-11'
                                 name="mobileno"
-                                label="Mobile No"
+                                // label="Mobile No"
                                 variant="outlined"
                                 value={contact.mobileno}
                                 onChange={handleChange}
@@ -442,12 +671,15 @@ console.log(signUpDetails,contact.mobileno)
                                 }
                                 }}
                                 inputProps={{maxLength:10}}
+                                
                             />
+                              {/* <p>{notVerified}</p> */}
+                            </div>
                             ) : (
                                 <TextField
-                                    className='col-12 col-lg-11 mt-2'
+                                    className='col-12 col-lg-11'
                                     id="outlined-disabled-input"
-                                    label="Mobile No."
+                                    // label="Mobile No."
                                     name='mobileno'
                                     onChange={handleChange}
                                     defaultValue={contact.mobileno}
@@ -479,12 +711,13 @@ console.log(signUpDetails,contact.mobileno)
                         </div>
                     </div>
                     <div className='ms-lg-2'>
+                    <FormLabel>E-Mail</FormLabel>
                         {isEditingEmail ? (
                             <TextField
                                 type="text"
-                                className='col-12 col-lg-11 mt-2'
+                                className='col-12 col-lg-11'
                                 name="email"
-                                label="E-Mail"
+                                // label="E-Mail"
                                 variant="outlined"
                                 value={contact.email}
                                 onChange={handleChange}
@@ -492,9 +725,9 @@ console.log(signUpDetails,contact.mobileno)
                             />
                             ) : (
                                 <TextField
-                                    className='col-12 col-lg-11 mt-2'
+                                    className='col-12 col-lg-11'
                                     id="outlined-disabled-input"
-                                    label="E-Mail"
+                                    // label="E-Mail"
                                     name='email'
                                     onChange={handleChange}
                                     value={contact.email}
@@ -508,7 +741,7 @@ console.log(signUpDetails,contact.mobileno)
                             {isEditingEmail ? (
                                 <>
                                     <Link onClick={handleSendOTP1} className='me-4 text-decoration-none text-success'>SendOTP</Link>
-                                    <Link onClick={handleCancel} className='text-decoration-none text-danger'>Cancel</Link>
+                                    <Link onClick={handleCancel1} className='text-decoration-none text-danger'>Cancel</Link>
                                 </>
                                 ) : (
                                     <Link onClick={handleEditEmail}className=" text-decoration-none">Update <i className="fas fa-pencil-alt text-primary"></i></Link>
@@ -521,14 +754,19 @@ console.log(signUpDetails,contact.mobileno)
                             {renderOTPFieldOrButton1()}
                         </div>
                     </div> 
+                    {fillDetails.length === 0 ? (
+                        ""
+                    ) : (
+                        <>
                     <h4 className='text-secondary'>Address Details</h4>
                     <div className='ms-lg-2'>
                     <div>
+                    <FormLabel className='mt-2'>House No</FormLabel>
                         {isEditingAddress ?
                             (
                                 <TextField
                                     type="text"
-                                    className='col-12 col-lg-11 mt-2'
+                                    className='col-12 col-lg-11'
                                     name="houseno"
                                     // label="House No."
                                     variant="outlined"
@@ -538,7 +776,7 @@ console.log(signUpDetails,contact.mobileno)
                                 />
                             ) : (
                                 <TextField
-                                    className='col-12 col-lg-11 mt-2'
+                                    className='col-12 col-lg-11'
                                     id="outlined-disabled-input"
                                     // label="House No."
                                     name='houseno'
@@ -553,11 +791,12 @@ console.log(signUpDetails,contact.mobileno)
                         {isEditingAddress && validationErrors.houseno && <span className="ms-5 error text-danger">{validationErrors.houseno}</span>}</small>
                     </div>
                     <div>
+                    <FormLabel className='mt-2'>Street No</FormLabel>
                         {isEditingAddress ?
                             (
                                 <TextField
                                     type="text"
-                                    className='col-12 col-lg-11 mt-2'
+                                    className='col-12 col-lg-11'
                                     name="streetno"
                                     // label="Street No."
                                     variant="outlined"
@@ -567,7 +806,7 @@ console.log(signUpDetails,contact.mobileno)
                                 />
                             ) : (
                                 <TextField
-                                    className='col-12 col-lg-11 mt-2'
+                                    className='col-12 col-lg-11'
                                     id="outlined-disabled-input"
                                     // label="Street No."
                                     name='streetno'
@@ -582,11 +821,12 @@ console.log(signUpDetails,contact.mobileno)
                         {isEditingAddress && validationErrors.streetno && <span className="ms-5 error text-danger">{validationErrors.streetno}</span>}</small>
                     </div>
                     <div>
+                    <FormLabel className='mt-2'>City</FormLabel>
                         {isEditingAddress ?
                             (
                                 <TextField
                                     type="text"
-                                    className='col-12 col-lg-11 mt-2'
+                                    className='col-12 col-lg-11'
                                     name="city"
                                     // label="City"
                                     variant="outlined"
@@ -604,7 +844,7 @@ console.log(signUpDetails,contact.mobileno)
                                 />
                             ) : (
                                 <TextField
-                                    className='col-12 col-lg-11 mt-2'
+                                    className='col-12 col-lg-11'
                                     id="outlined-disabled-input"
                                     // label="City"
                                     name='city'
@@ -620,11 +860,12 @@ console.log(signUpDetails,contact.mobileno)
                         {isEditingAddress && validationErrors.city && <span className="ms-5 error text-danger">{validationErrors.city}</span>}</small>
                     </div>
                     <div>
+                    <FormLabel className='mt-2'>State</FormLabel>
                         {isEditingAddress ?
                             (
                                 <TextField
                                     type="text"
-                                    className='col-12 col-lg-11 mt-2'
+                                    className='col-12 col-lg-11'
                                     name="state"
                                     // label="state"
                                     variant="outlined"
@@ -635,7 +876,7 @@ console.log(signUpDetails,contact.mobileno)
                                 />
                             ) : (
                                 <TextField
-                                    className='col-12 col-lg-11 mt-2'
+                                    className='col-12 col-lg-11'
                                     id="outlined-disabled-input"
                                     // label="state"
                                     name='state'
@@ -650,11 +891,12 @@ console.log(signUpDetails,contact.mobileno)
                         {isEditingAddress && validationErrors.state && <span className="ms-5 error text-danger">{validationErrors.state}</span>}</small>
                     </div>
                     <div>
+                    <FormLabel className='mt-2'>Pincode</FormLabel>
                         {isEditingAddress ?
                             (
                                 <TextField
                                     type="text"
-                                    className='col-12 col-lg-11 mt-2'
+                                    className='col-12 col-lg-11'
                                     name="pincode"
                                     // label="Pincode"
                                     variant="outlined"
@@ -671,7 +913,7 @@ console.log(signUpDetails,contact.mobileno)
                                 />
                             ) : (
                                 <TextField
-                                    className='col-12 col-lg-11 mt-2'
+                                    className='col-12 col-lg-11'
                                     id="outlined-disabled-input"
                                     // label="Pincode"
                                     name='pincode'
@@ -687,75 +929,26 @@ console.log(signUpDetails,contact.mobileno)
                     </div>
                     <div className="text-center my-2">
                             {isEditingAddress ? (
-                                <Link onClick={handleSaveAddress} className='text-decoration-none text-success'>Save</Link>
+                                <>
+                                    <Link onClick={handleSaveAddress} className='text-decoration-none text-success me-4'>Save</Link>
+                                    <Link onClick={handleCancel2} className='text-decoration-none text-danger'>Cancel</Link>
+                                </>
                             ) : (
                                 <Link onClick={handleEditAddress} className='text-decoration-none'>Update<i className="fas fa-pencil-alt text-primary ms-1"></i></Link>
                             )}
                         </div>
-                    </div>
+                    </div></>) }
                 </div>
             </div>
             <div className='col-12 col-lg-9 col-md-8 mt-3'>
-                <h2 className='text-light fw-bold text-center rounded' style={{background:'#318ce7'}}>Policy Details<span><Link to='/'><button className='btn btn-danger float-end me-2 fw-bold py-1 mt-1'>Log Out</button></Link></span></h2>
+                <h2 className='text-light fw-bold text-center  rounded' style={{background:'#318ce7'}}>Policy Details<span><Link to='/'><button className='btn btn-danger  float-end fw-bold shadow'>Log Out <LogoutIcon className='fs-5'/></button></Link></span></h2>
                 <div className='ms-2'>
-                    <h4 className='text-secondary'>Customer Details</h4>
+                    {/* <h4 className='text-secondary'>Customer Details</h4> */}
                     {/* new table */}
                     
-                    <div>
-                        <div className="card shadow mt-3 fillOutPage">
-                            <div className="card-header pcdetails d-flex justify-content-between flex-wrap">
-                                <h4 className="text-start fw-bold text-secondary">RamanaSecure Living</h4>
-                                <h5 className="text-end mt-2 mt-md-0">
-                                <span className="fw-bold text-secondary">ID :</span>
-                                {signUpDetails[0]?.customerId}
-                                </h5>
-                            </div>
-                            <div className="card-body">
-                                <div className="row pcdetails">
-                                <div className="col-md-6">
-                                    <p className="card-text fw-bold">
-                                    Name &nbsp;&nbsp;: <span className="fw-bold text-secondary">
-                                        {signUpDetails[0]?.name}
-                                    </span>
-                                    </p>
-                                    <p className="card-text fw-bold">
-                                    Email &nbsp;&nbsp;&nbsp;: <span className="fw-bold text-secondary">
-                                        {signUpDetails[0]?.email}
-                                    </span>
-                                    </p>
-                                    <p className="card-text fw-bold">
-                                    Mobile&nbsp; :<span className="fw-bold text-secondary"> {mobileno}</span>
-                                    </p>
-                                    <p className="card-text fw-bold">
-                                    Address : <span className="fw-bold text-secondary">
-                                        { fillDetails[0]?.propertyhouseNo }
-                                        {fillDetails[0]?.propertystreetNo}
-                                        {fillDetails[0]?.propertypincode}
-                                        {fillDetails[0]?.propertycity}
-                                        {fillDetails[0]?.propertystate}
-                                    </span>
-                                    </p>
-                                </div>
-                                <div className="col-md-6 mt-3 mt-md-0">
-                                    <p className="card-text fw-bold">
-                                    Age of the building : <span className="fw-bold text-secondary">
-                                        {StrucutureDetails[0]?.buildingAge}
-                                    </span>
-                                    </p>
-                                    <p className="card-text fw-bold">
-                                    Premium Amount &nbsp;&nbsp;&nbsp;: <span className="fw-bold text-secondary"> ₹{paymentDetails[0]?.premium} /-</span>
-                                    </p>
-                                    <p className="card-text fw-bold">
-                                    Property Value &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : <span className="fw-bold text-secondary"> {StrucutureDetails[0]?.marketValue}</span>
-                                    </p>
-                                    <p className="card-text fw-bold">
-                                    No. Of Years &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : <span className="fw-bold text-secondary"> {paymentDetails[0]?.year}&nbsp;Years</span>
-                                    </p>
-                                </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    {
+                        interartingCustomerDetails ()
+                    }
                 </div>
             </div>
 
@@ -764,3 +957,34 @@ console.log(signUpDetails,contact.mobileno)
 }
 
 export default Profile;
+
+
+// useEffect(() => {  
+//     try {
+//         PropertyInsuranceService.getCustomerIdByMobileNo(storedMobileNumber)
+//         .then((res) => {
+//             setSignUpDetails(res.data);
+//             const customerId = res.data[0]?.customerId;
+//             if (customerId) {
+//                 PropertyInsuranceService.getStructureDetailsByCustomerId(customerId)
+//                     .then((res) => {
+//                         setStructureDetails(res.data);
+//                     });
+//                 PropertyInsuranceService.getFillDetailsByCustomerId(customerId)
+//                     .then((res) => {
+//                         setFilldetails(res.data);
+//                     });
+//                 PropertyInsuranceService.getPaymentDetailsByCustomerId(customerId)
+//                     .then((res) => {
+//                         setPaymentDetails(res.data);
+//                     })
+//                     .catch((error) => {
+//                         console.error();
+//                     });
+//             }
+//         });
+//     } catch (error) {
+//         console.log("error occured",error);
+//     }   
+    
+//     }, []); 

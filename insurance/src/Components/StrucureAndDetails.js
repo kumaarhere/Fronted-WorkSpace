@@ -76,7 +76,7 @@ export default function StrucureAndDetails() {
           // validation --2 :
           else if (name === "squareFeet") {
             if (!regexpropertyValues.test(value)) {
-              setValidationErrors({ ...validationErrors, [name]: "The square feet value should be 100 to 100,000." });
+              setValidationErrors({ ...validationErrors, [name]: "The square feet value should be 100 to 99,999." });
             } else {
               setValidationErrors({ ...validationErrors, [name]: "" });
             }

@@ -4,16 +4,35 @@ import React,{useEffect, useState} from 'react';
 import PropertyInsuranceService from '../Service/PropertyInsuranceService';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import RamanaLogo from '../images/p4.jpeg';
-import WhatsAppIcon from '@mui/icons-material/WhatsApp';
-import Switch from '@mui/material/Switch';
 import insurance from '../images/insurance.jpg';
 import safe from '../images/safe.png';
 import Header from '../Header';
+import { toast } from 'react-toastify';
+import { Modal } from 'react-bootstrap';
 
 function PaymentPage() {
+  const [referenceNumber, setReferenceNumber] = useState('');
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const generateReferenceNumber = (length = 10) => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * chars.length);
+      result += chars[randomIndex];
+    }
+    return result;
+  }
+
+  useEffect(() => {
+    const newReferenceNumber = generateReferenceNumber(10);
+    setReferenceNumber(newReferenceNumber);
+  }, []);
+
+
+
   const label = { inputProps: { 'aria-label': 'Switch demo' } };
   function handleGoBack(){
     window.history.back();
@@ -44,9 +63,9 @@ function PaymentPage() {
  const  houseno = state?.userDetails?.houseno;
  const  streetno = state?.userDetails?.streetno;
  const Intialcity=state?.userDetails?.city;
- const PropertyCity=state?.userDetails?.propertycity;
+//  const PropertyCity=state?.userDetails?.propertycity;
  const Intialstate=state?.userDetails?.state;
- const Propertystate=state?.userDetails?.propertystate;
+//  const Propertystate=state?.userDetails?.propertystate;
 // data from premium page:
   const year = premiumData?.year;
   const premium = premiumData?.Premium;
@@ -119,14 +138,14 @@ const [dataValues] = useState({
   propertypincode: userpincode,
   propertyhouseNo: propertyhouseNo,
   propertystreetNo: propertystreetNo,
-  propertycity:fillDetailsAlluserRelated.propertycity, 
-  propertystate: fillDetailsAlluserRelated.propertystate,
+  // propertycity:fillDetailsAlluserRelated.propertycity, 
+  // propertystate: fillDetailsAlluserRelated.propertystate,
   currentaddress: address,
   pincode: address === 'yes' ? userpincode : pincode,
   houseno: address === 'yes' ? propertyhouseNo : houseno,
   streetno: address === 'yes' ? propertystreetNo : streetno,
-  city:address === 'yes' ? fillDetailsAlluserRelated.propertycity : fillDetailsAlluserRelated.city,
-  state:address === 'yes' ? fillDetailsAlluserRelated.propertystate : fillDetailsAlluserRelated.state,
+  // city:address === 'yes' ? fillDetailsAlluserRelated.propertycity : fillDetailsAlluserRelated.city,
+  // state:address === 'yes' ? fillDetailsAlluserRelated.propertystate : fillDetailsAlluserRelated.state,
   customerId:"",
   paymentId:"",
 });
@@ -164,7 +183,7 @@ const navigate=useNavigate("");
   values.customerId = signUpRowsAsString.join(', ');
 
   console.log(Intialcity,Intialstate,fillDetailsAlluserRelated);
-console.log(fillDetailsAlluserRelated.propertycity,fillDetailsAlluserRelated.propertystate);
+// console.log(fillDetailsAlluserRelated.propertycity,fillDetailsAlluserRelated.propertystate);
 
   const handleClick=()=>{
      const var4= 'https://api.razorpay.com/v1/payments/qr_codes/qr_FuZIYx6rMbP6gs';
@@ -172,7 +191,7 @@ console.log(fillDetailsAlluserRelated.propertycity,fillDetailsAlluserRelated.pro
     key: 'rzp_test_Su4WV4zdBIGTmZ', 
     entity:var4,
     amount: amount, 
-    name: 'Ramana Soft Insurance Company',
+    name: 'RamanaSoft Insurance Company',
     description: 'IS A INSURANCE COMPANY',
     image: p4,
     handler: function (response) 
@@ -197,7 +216,9 @@ console.log(fillDetailsAlluserRelated.propertycity,fillDetailsAlluserRelated.pro
       PropertyInsuranceService.createfillDetails(dataValues);
       PropertyInsuranceService.createDetails(values)
 
-      alert("Payment SuccessFully Completed Thank You");
+      toast.success("Payment SuccessFully Completed Thank You");
+      toast.info("Please Login to Continue...");
+           
       navigate("/");
 
       
@@ -220,17 +241,17 @@ console.log(fillDetailsAlluserRelated.propertycity,fillDetailsAlluserRelated.pro
 }
 
   return (
-    <div className='row pay px-1'>
+    <div className='container-fluid pay'>
       <Header/>
-      <div className='mt-5 px-3 mx-md-5 mx-lg-5 mt-lg-5 pt-4 w-75'>
+      <div className='mt-lg-5 mt-5 px-3 mx-md-5 mx-lg-5 pt-4'>
         <h4 className='fw-bold'>Checkout</h4>
         <p className='py-2'>Thank you <span className='fw-bold'>{name?name:'user'}</span>&nbsp;for choosing RamanaSoft Insurance for your home insurance needs.</p>
         <p className='fw-bold text-secondary'><ArrowBackIcon className='text-primary fs-2 border rounded shadow' onClick={handleGoBack} /> &nbsp; Back to fill Data Form</p>
       </div>
-
-      <div className='col-12 col-md-10 mx-md-5 col-lg-7  mx-2'>
-        <div className="card border-success px-2 shadow mb-3 mx-lg-5 property" style={{ maxWidth: '55rem' }}>
-          <div className="card-header bg-transparent border-success">Reference Number : <span className='fw-bold'>56445462321</span></div>
+     <div className='row'>
+      <div className='col-12 col-md-9 mx-md-5 col-lg-7 '>
+        <div className="card border-success px-2 shadow mb-3  property">
+          <div className="card-header bg-transparent border-success">Reference Number : <span className='fw-bold'>{referenceNumber}</span></div>
           <div className="card-body py-1">
             <div className='d-flex flex-lg-row flex-column flex-md-row justify-content-around'>
               <div>
@@ -267,7 +288,7 @@ console.log(fillDetailsAlluserRelated.propertycity,fillDetailsAlluserRelated.pro
             </div>
           </div>
           <div className="card-footer bg-transparent ">
-            <div className='p-2 text-center text-lg-start text-secondary'>
+            <div className='p-lg-2 text-center text-lg-start text-secondary'>
               <h6>Declaration : By clicking on proceed to payment I hereby declare that my house is a pucca (brick and cement) construction and I do not have any claim history.</h6>
             </div>
             <div className='row mt-2'>
@@ -277,7 +298,7 @@ console.log(fillDetailsAlluserRelated.propertycity,fillDetailsAlluserRelated.pro
               </div>
               <div className='col-12 col-lg-6'>
                 <div>
-                  <button className='btn btn-primary mx-md-5 px-5 py-2 mx-lg-5 fw-bold buy mb-2 mx-2 text-nowrap' onClick={handleClick}>Proceed to Payment</button>
+                  <button className='btn btn-primary py-2 px-lg-4 fw-bold buy mb-2 mx-3 text-nowrap' onClick={handleClick}>Proceed to Payment</button>
                   <div>
                     <small>By clicking "Proceed to Payment", I accept the above Declaration and that I've personally filled out the fill data form.</small>
                   </div>
@@ -288,13 +309,14 @@ console.log(fillDetailsAlluserRelated.propertycity,fillDetailsAlluserRelated.pro
         </div>
       </div>
 
-      <div className='col-12 col-lg-4 d-flex'>
+      <div className='col-12 col-lg-3 col-md-5'>
         <div>
           <img src={safe} title="no data breeching" alt='secured data' className='w-100'></img>
         </div>
       </div>
-      <div className='px-5 me-lg-3'>
-        <p className='text-center'>RamanaSoft Insurance Pvt.Ltd located at Aditya Trade center, Ameerpet. Hyderabad 500073.<br /> for more enquiries please contact <a href="mailto:ramanasoftpvtltd@gmail.com">ramanasoftpvtltd@gmail.com</a>.</p>
+      </div>
+      <div className='px-5 row'>
+        <p className='text-center'>RamanaSoft Insurance Pvt.Ltd located at Aditya Trade center, Ameerpet. Hyderabad 500073.<br /> for more enquiries please contact <a href="mailto:support.ramanasoft@gmail.com">support.ramanasoft@gmail.com</a>.</p>
       </div>
       {/* {values.customerId} */}
       {/* {Intialcity} */}

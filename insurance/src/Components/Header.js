@@ -9,6 +9,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import { ClickAwayListener,Tooltip } from '@mui/material';
 
 function Header() {
 
@@ -20,14 +21,14 @@ function Header() {
 
       const [open, setOpen] = React.useState(false);
     
-      const handleClickOpen = () => {
-        setOpen(true);
-      };
-    
-      const handleClose = () => {
+      const handleTooltipClose = () => {
         setOpen(false);
       };
-
+    
+      const handleTooltipOpen = () => {
+        setOpen(true);
+      };
+     
   return (
     <div className='text-center' >
       <header >
@@ -42,7 +43,7 @@ function Header() {
 
 				<div className="ms-auto me-3 ">
         {/* <button style={{cursor:'pointer',background:'#ace1af'}} className='btn  fw-bold text-nowrap'><PhoneIcon />Call Us </button> */}
-        <React.Fragment>
+        {/* <React.Fragment>
       <Button variant="outlined" onClick={handleClickOpen} className='btn  fw-bold text-nowrap'>
       <PhoneIcon />Call Us
       </Button>
@@ -59,7 +60,24 @@ function Header() {
           </DialogContentText>
         </DialogContent>
       </Dialog>
-    </React.Fragment>
+    </React.Fragment> */}
+    <ClickAwayListener onClickAway={handleTooltipClose}>
+            <div className=''>
+              <Tooltip
+                PopperProps={{
+                  disablePortal: true,
+                }}
+                onClose={handleTooltipClose}
+                open={open}
+                disableFocusListener
+                disableHoverListener
+                disableTouchListener
+                title="1800-143-123"
+              >
+                <Button onClick={handleTooltipOpen} className='text-center me-lg-4 text-nowrap'><PhoneIcon />&nbsp;Call Us </Button>
+              </Tooltip>
+            </div>
+          </ClickAwayListener>
 				</div> 
 
 			</div>

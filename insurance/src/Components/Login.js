@@ -241,7 +241,7 @@ function Login() {
                   }}
                   />
                   <span>
-                <button className='btn btn-success rounded fw-bold shadow mt-2 mx-2 ms-3 py-2' onClick={sendOTP}>Send OTP</button></span>
+                <button className='btn btn-success rounded fw-bold shadow mt-2 mx-2 ms-3 py-2' disabled={showOTPInput===true} onClick={sendOTP}>Send OTP</button></span>
                   <br/>
                   <small>
                   {validationErrors.mobileno && <span className="text-danger">{validationErrors.mobileno}</span>}</small>
@@ -281,10 +281,10 @@ function Login() {
                 <div className='mt-lg-3 d-flex justify-content-center'>
                     {/* <button className='btn btn-link  text-decoration-none fw-bold' onClick={handleClick} >Create Account ? </button>                 */}
                     {
-                    verifyotp === "Verified Successfully" &&<button className='btn btn-primary fw-bold shadow' onClick={HandleLogin}>Login <LoginSharpIcon className='text-dark'/></button>
+                    verifyotp === "Verified Successfully" &&<button className='btn btn-primary fw-bold shadow px-4' onClick={HandleLogin}>Login <LoginSharpIcon className='text-dark'/></button>
                     }
                     {
-                      verifyotp !== "Verified Successfully" &&<button className='btn btn-primary fw-bold shadow disabled'>Login <LoginSharpIcon className='text-dark'/> </button>
+                      verifyotp !== "Verified Successfully" &&<button className='btn btn-primary fw-bold shadow disabled px-4'>Login <LoginSharpIcon className='text-dark'/> </button>
                     }
                  </div>
               </div>
@@ -343,7 +343,7 @@ function Login() {
                     </div>
                     <div className='col-8 col-lg-9 lbmail'>
                       <p className='text-secondary fw-bold'>For General Enquires</p>
-                      <h4 className='fw-bold'>Ramanasoftpvtltd@gmail.com</h4>
+                      <h4 className='fw-bold'><a href="mailto:'support.ramanasoft@gmail.com" className='text-decoration-none text-dark'>support.ramanasoft@gmail.com</a></h4>
                     </div>
                   </div>
                   <div className='row w-100 border mt-5 p-2 rounded shadow'>

@@ -42,11 +42,11 @@ function App() {
               <Route path="/*" element={<ErrorPage/>}/>
 
             <Route element={<ProtectedRoutes/>}>
+              <Route path="/profile" element={<Profile/>}/>
               <Route exact path="/login" element={<LoginPage/>}/>
               <Route path="/admin" element={<AdminPage/>}/>
               <Route path="/fill" element={<FilldetailsPage/>}/>
               <Route path="/payment" element={<PaymentPage/>}/>
-              <Route path="/profile" element={<Profile/>}/>
             </Route>
           </Routes>
         </div>
